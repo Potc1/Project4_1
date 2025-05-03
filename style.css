@@ -1,0 +1,38 @@
+#container{
+    display: grid;
+    text-align: center;
+    margin: 0 auto;
+    height: 40%;
+    width: 70%;
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 10%;
+}
+
+a:link {
+    color: black;
+    text-decoration: dashed;
+}
+
+#market{ 
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 2em;
+    text-align: center;
+    #marketLink{
+        margin-top: 20%;
+        margin-left: 35%;
+        font-size: xx-large;
+    }
+}
+
+#profile{
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 2em;
+    text-align: center;
+    #profileLink{
+        margin-top: 20%;
+        margin-left: 35%;
+        font-size: xx-large;
+    }
+}

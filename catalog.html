@@ -1,0 +1,56 @@
+<!DOCTYPE>
+<html lang="ru">
+    <head>
+        <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <div id="container"></div>
+        <p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+              Link with href
+            </a>
+        </p>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry <br> richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            </div>
+        </div>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="script.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+     <script type="module">
+                      // 1️⃣ Импорт Firebase SDK
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+            import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+            // 2️⃣ Конфигурация Firebase (замени своими данными)
+            const firebaseConfig = {
+                apiKey: "AIzaSyD2Rtcn5aRuoe3iYCcc4A69emUUs7A17-4",
+                authDomain: "imoex-2f0cb.firebaseapp.com",
+                databaseURL: "https://imoex-2f0cb-default-rtdb.europe-west1.firebasedatabase.app",
+                projectId: "imoex-2f0cb",
+                storageBucket: "imoex-2f0cb.firebasestorage.app",
+                messagingSenderId: "1057428815603",
+                appId: "1:1057428815603:web:63fc54d0e689e5e1978186",
+                measurementId: "G-1H48PEL5RV"
+                };
+
+            // 3️⃣ Инициализация Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            ///const newUserRef = push(ref(database, "users"));
+            
+            // 4️⃣ Слушаем обновления в реальном времени
+            const dataRef = ref(database, "/");
+            onValue(dataRef, (snapshot) => {
+                var data = snapshot.val();
+                //console.log("🔥 Обновление данных:", data);
+                SetData(data);
+            });
+    </script>
+</html>
