@@ -6,13 +6,13 @@ function SetData(data){
                 <br> 
                 <hr align="center" width="100%"/> `;
         for(let key in data['Shares']){
-            elem += `<p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Shares'][key]['ISIN']}" onclick="event.preventDefault(); MakeChart('${data['Shares'][key]['ISIN']}', 'Shares');" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Shares'][key]['NAME']}</a></p>` +
-            `<div class="collapse" id="collapseExample${data['Shares'][key]['ISIN']}">
-                <div class="card card-body">
-                <b>ISIN:</b> ${data['Shares'][key]['ISIN']} <br> <b>OPEN:<b> ${data['Shares'][key]['OPEN']} LOW: ${data['Shares'][key]['LOW']} <br> <b>LAST:<b> ${data['Shares'][key]['LAST']} HIGH: ${data['Shares'][key]['HIGH']}
+            elem += `<p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Shares'][key]['ISIN']}" onclick="event.preventDefault(); MakeChart('${data['Shares'][key]['ISIN']}', 'Shares');" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Shares'][key]['NAME']}</a></p>` + // не менять
+            `<div class="collapse" id="collapseExample${data['Shares'][key]['ISIN']}"> // не менять
+                <div class="card card-body"> // не менять
+                <b>ISIN:</b> ${data['Shares'][key]['ISIN']} <br> <b>OPEN:<b> ${data['Shares'][key]['OPEN']} LOW: ${data['Shares'][key]['LOW']} <br> <b>LAST:<b> ${data['Shares'][key]['LAST']} HIGH: ${data['Shares'][key]['HIGH']} 
                 </div>
-                    <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div>
-                <button type="button" class="btn btn-primary btn">Добавить</button>
+                    <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div> // не менять
+                <button type="button" class="btn btn-primary btn">Добавить</button> // не менять
             </div>` 
             
         }
@@ -20,10 +20,10 @@ function SetData(data){
                 <br> 
                 <hr align="center" width="100%"/> `;
         for(let key in data['Bonds']){
-            elem += `<p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Bonds'][key]['ISIN']}" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Bonds'][key]['NAME']}</a></p>` +
-               `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}">
-                 <div class="card card-body">
-                ISIN: ${data['Bonds'][key]['ISIN']} <br> <br> OPEN: ${data['Bonds'][key]['OPEN']} <br> LAST: ${data['Bonds'][key]['LAST']} 
+            elem += `<p><a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Bonds'][key]['ISIN']}" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Bonds'][key]['NAME']}</a></p>` + // не менять
+               `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}"> // не менять
+                 <div class="card card-body"> // не менять
+                ISIN: ${data['Bonds'][key]['ISIN']} <br> <br> OPEN: ${data['Bonds'][key]['OPEN']} <br> LAST: ${data['Bonds'][key]['LAST']}  
                 </div> 
              </div>` 
         }
