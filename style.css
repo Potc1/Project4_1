@@ -107,3 +107,53 @@ html {
 .card card-body {
     background: #3a3a3a;
 }
+
+/*Стили блоков акциий и облигаций в рынке и профиле*/
+.share{
+    display: grid;
+    grid-template-columns: 350px repeat(3, 1fr);
+    a{
+        width: 50%;
+    }
+}
+
+.bond{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/*Профиль панели доходности, стоимости и тд*/
+
+#profile{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+}
+
+#cost{
+    display: grid;
+    grid-gap: 5px;
+    align-content: center;
+    padding: 10px;
+    border: 2px solid #d9d9d9;
+    border-radius: 13px;
+}
+
+#income_value{
+    display: grid;
+    grid-gap: 5px;
+    align-content: center;
+    padding: 10px;
+    border: 2px solid #d9d9d9;
+    border-radius: 13px;
+}
+
+#income_percent{
+    display: grid;
+    grid-gap: 5px;
+    align-content: center;
+    padding: 10px;
+    border: 2px solid #d9d9d9;
+    border-radius: 13px;
+}
