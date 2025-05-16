@@ -1,0 +1,94 @@
+<html lang="ru">
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body class = "header">
+        <div id="profile">
+            <div id="cost">
+                <p id="costText">Стоимость:</p>
+                <p id="costValue"></p>
+            </div>
+            <div id="income_value">
+                <p id="income_valueText">Прибыль:</p>
+                <p id="income_valueValue"></p>
+            </div>
+            <div id="income_percent">
+                <p id="income_percentText">Прибыль:</p>
+                <p id="income_percentValue">100</p>
+            </div>   
+        </div>
+        <div id="container">
+            <div class = "header">
+              <div class="header-content">
+                  <a data-toggle="collapse" href="#collapseStonks"><span class="header-title">Акции</span></a>
+                  <div class="header-line"></div>
+              </div>
+            </div>
+            <div id="sharesContent"></div>  
+            <div class = "header">
+              <div class="header-content">
+                <a data-toggle="collapse" href="#collapseBonds"><span class="header-title">Облигации</span></a> 
+                <div class="header-line"></div>
+              </div>
+            </div>
+            <div id="bondsContent"></div>
+          </div>
+          <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="alert-area mr-3 ml-3"></div>
+                <div class="modal-footer"></div>
+              </div>
+            </div>
+          </div>  
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="profile.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="module">
+                    // 1️⃣ Импорт Firebase SDK
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+            import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+            // 2️⃣ Конфигурация Firebase (замени своими данными)
+            const firebaseConfig = {
+            apiKey: "AIzaSyD2Rtcn5aRuoe3iYCcc4A69emUUs7A17-4",
+            authDomain: "imoex-2f0cb.firebaseapp.com",
+            databaseURL: "https://imoex-2f0cb-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "imoex-2f0cb",
+            storageBucket: "imoex-2f0cb.firebasestorage.app",
+            messagingSenderId: "1057428815603",
+            appId: "1:1057428815603:web:63fc54d0e689e5e1978186",
+            measurementId: "G-1H48PEL5RV"
+            };
+
+            // 3️⃣ Инициализация Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
+            ///const newUserRef = push(ref(database, "users"));
+
+            // 4️⃣ Слушаем обновления в реальном времени
+            const dataRef = ref(database, "/");
+            onValue(dataRef, (snapshot) => {
+            var data = snapshot.val();
+            //console.log("🔥 Обновление данных:", data);
+            SetProfile(data);
+            });
+    </script>
+</html>
+
+ 
