@@ -20,16 +20,28 @@ async function SetProfile(data, user_profile) {
                         onclick="event.preventDefault(); MakeChart('${data['Shares'][key]['ISIN']}', 'Shares');" role="button"
                         aria-expanded="false" aria-controls="collapseExample">${data['Shares'][key]['NAME']}
                     </a>
-                    <p>${data['Shares'][key]['LOTSIZE']}</p>
+                    <p>${data['Shares'][key]['LAST']*data['Shares'][key]['LOTSIZE']*profile['liked_shares'][key]['count']}</p> // стоимость сейчас
+                    <p>${profile['liked_shares'][key]['likedCost']*data['Shares'][key]['LOTSIZE']*profile['liked_shares'][key]['count']}</p> // стоимость покупки
                     <p>${data['Shares'][key]['LOW']}</p>
                     <p>${data['Shares'][key]['HIGH']}</p>
             </div>` +
                 `<div class="collapse" id="collapseExample${data['Shares'][key]['ISIN']}">
                 <div class = "card card-body">
-                    <b>ISIN:</b> ${data['Shares'][key]['ISIN']} <br> <b>OPEN:</b> ${data['Shares'][key]['OPEN']} LOW: ${data['Shares'][key]['LOW']} <br> <b>LAST:</b> ${data['Shares'][key]['LAST']} HIGH: ${data['Shares'][key]['HIGH']} 
+                    <p><b>ISIN:</b> ${data['Shares'][key]['ISIN']}</p>
+                    <p><b>Количество лотов:</b> ${profile['liked_shares'][key]['count']}</p>
+                    <p><b>Цена покупки:</b> ${profile['liked_shares'][key]['likedCost']}</p>
+                    <p><b>Цена открытия:</b> ${data['Shares'][key]['OPEN']}</p>
+                    <p><b>Цена сейчас:</b> ${data['Shares'][key]['LAST']}</p>
+                    <p><b>МИН:</b> ${data['Shares'][key]['LOW']} <b>МАКС</b> ${data['Shares'][key]['HIGH']}</p> 
+                    <p><b>Размер лота</b> ${data['Shares'][key]['LOTSIZE']} акций</p>  
+                    <div id="note${data['Shares'][key]['ISIN']}">
+                        <p><b>Заметка:</b></p>
+                        <p>${(profile['liked_shares'][key]['note'] ? profile['liked_shares'][key]['note'] : "")}</p>
+                    </div>
                 </div>
                     <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div>
                 <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${user_profile}', '${data['Shares'][key]['ISIN']}', ${data['Shares'][key]['LAST']})">Изменить</button>
+                <button type="button" class="btn btn-primary btn" onclick="NoteModal('${user_profile}', '${data['Shares'][key]['ISIN']}', 'Shares')">Заметка</button>
             </div>`
             profileCost += data['Shares'][key]['LAST'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count']
             profileIncome += profile['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count'] 
@@ -40,6 +52,7 @@ async function SetProfile(data, user_profile) {
         elem += ``;
         return elem
     })
+    elem = ``;
     $('#bondsContent').html(function () {
         var len = Object.keys(data).length;
         elem += `<div id="collapseBonds" class="collapse">` +
@@ -53,12 +66,25 @@ async function SetProfile(data, user_profile) {
                 <p>${data['Bonds'][key]['OPEN']}</p>` +
                 `</div>` +
                 `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}">
-                <div class="card card-body">
-                    ISIN: ${data['Bonds'][key]['ISIN']} <br> <br> OPEN: ${data['Bonds'][key]['OPEN']} <br> LAST: ${data['Bonds'][key]['LAST']}  
-                </div> 
-             </div>`
+                <div class = "card card-body">
+                    <p><b>ISIN:</b> ${data['Bonds'][key]['ISIN']}</p>
+                    <p><b>Количество лотов:</b> ${profile['liked_bonds'][key]['count']}</p>
+                    <p><b>Цена покупки:</b> ${profile['liked_bonds'][key]['likedCost']}</p>
+                    <p><b>Цена открытия:</b> ${data['Bonds'][key]['OPEN']}</p>
+                    <p><b>Цена сейчас:</b> ${data['Bonds'][key]['LAST']}</p>
+                    <p><b>МИН:</b> ${data['Bonds'][key]['LOW']} <b>МАКС</b> ${data['Bonds'][key]['HIGH']}</p> 
+                    <p><b>Размер лота</b> ${data['Bonds'][key]['LOTVALUE']} </p>  
+                    <div id="note${data['Bonds'][key]['ISIN']}">
+                        <p><b>Заметка:</b></p>
+                        <p>${(profile['liked_bonds'][key]['note'] ? profile['liked_bonds'][key]['note'] : "")}</p>
+                    </div>
+                </div>
+                 <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Bonds'][key]['ISIN']}" class="js-plotly-plot"></div>
+                <button type="button" class="btn btn-primary btn" onclick="modal('Bonds', '${user_profile}', '${data['Bonds'][key]['ISIN']}', ${data['Bonds'][key]['LAST']})">Изменить</button>
+                <button type="button" class="btn btn-primary btn" onclick="NoteModal('${user_profile}', '${data['Bonds'][key]['ISIN']}', 'Bonds')">Заметка</button>
+            </div>`
         }
-        elem += `</div>`
+        
         return elem;
     })
 }
@@ -81,6 +107,35 @@ async function GetProfile(user) {
   }
 }
 
+function NoteModal(user, ISIN, type){
+    var title = "Изменить заметку";
+    var input = `
+    <div class="form-group">
+					<label for="count">Введите заметку</label>
+					<input id="note" name="заметка" class="form-control form-control-sm" type="text">
+     </div>`
+    var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
+    var button = `<button type="button" class="btn btn-success" onclick="SetNote('${user}', '${ISIN}', '${type}', true)" data->Подтвердить</button>` +
+                  `<button type="button" class="btn btn-danger" onclick="SetNote('${user}', '${ISIN}', '${type}', false)" data->Удалить</button>`;
+    $('#commonModal .modal-header .modal-title').html(title);
+    $('#commonModal .modal-body').html(form);
+    $('#commonModal .modal-footer').html(button);
+    $('#commonModal').modal('show');
+}
+function SetNote(user, ISIN, type, flag){
+    if (flag == true){
+        var note = document.getElementById('note').value
+    }
+    else{
+        note = "";
+    }
+    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&profile=${user}&user_note=${note}&action=note`, {
+        method: "GET"
+    })
+    $('#commonModal').modal('toggle');
+    SetProfile(marketdata, user);
+}
+
 async function CheckProfile(user_profile){
     res = await GetProfile(user_profile);
     if (res != null){
@@ -95,7 +150,7 @@ async function CheckProfile(user_profile){
 }
 
 function MakeChart(ISIN, type) {
-    let response = fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&action=chart`, {
+    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&action=chart`, {
         method: "GET"
     })
         .then(response => response.json())
@@ -161,4 +216,5 @@ function RemoveStonk(type, user, ISIN) {
         method: "GET",
     })
     $('#commonModal').modal('toggle');
+    SetProfile(marketdata, user);
 }

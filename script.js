@@ -20,7 +20,11 @@ function SetData(data, user_profile) {
             </div>` +
                 `<div class="collapse" id="collapseExample${data['Shares'][key]['ISIN']}">
                 <div class = "card card-body">
-                    <b>ISIN:</b> ${data['Shares'][key]['ISIN']} <br> <b>OPEN:</b> ${data['Shares'][key]['OPEN']} LOW: ${data['Shares'][key]['LOW']} <br> <b>LAST:</b> ${data['Shares'][key]['LAST']} HIGH: ${data['Shares'][key]['HIGH']} 
+                    <p><b>ISIN:</b> ${data['Shares'][key]['ISIN']}</p>
+                    <p><b>Цена открытия:</b> ${data['Shares'][key]['OPEN']}</p>
+                    <p><b>Цена сейчас:</b> ${data['Shares'][key]['LAST']}</p>
+                    <p><b>МИН:</b> ${data['Shares'][key]['LOW']} <b>МАКС</b> ${data['Shares'][key]['HIGH']}</p> 
+                    <p><b>Размер лота</b> ${data['Shares'][key]['LOTSIZE']} акций</p>  
                 </div>
                     <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div>
                 <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${user_profile}', '${data['Shares'][key]['ISIN']}', ${data['Shares'][key]['LAST']})">Добавить</button>
@@ -31,6 +35,7 @@ function SetData(data, user_profile) {
         elem += ``;
         return elem
     })
+    var elem = ``;
     $('#collapseBonds').html(function () {
         var len = Object.keys(data).length;
         elem += `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
@@ -44,11 +49,19 @@ function SetData(data, user_profile) {
                 `</div>` +
                 `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}">
                 <div class="card card-body">
-                    ISIN: ${data['Bonds'][key]['ISIN']} <br> <br> OPEN: ${data['Bonds'][key]['OPEN']} <br> LAST: ${data['Bonds'][key]['LAST']}  
+                    <p><b>ISIN:</b> ${data['Bonds'][key]['ISIN']}</p>
+                    <p><b>Цена открытия:</b> ${data['Bonds'][key]['OPEN']}</p>
+                    <p><b>Цена сейчас:</b> ${data['Bonds'][key]['LAST']}</p>
+                    <p><b>МИН:</b> ${data['Bonds'][key]['LOW']} <b>МАКС</b> ${data['Bonds'][key]['HIGH']}</p> 
+                    <p><b>Номинал:</b> ${data['Bonds'][key]['LOTVALUE']} </p>   
+                    <p><b>Доходность:</b> ${data['Bonds'][key]['YIELD']}</p>
+                    <p><b>Размер купона:</b> ${data['Bonds'][key]['COUPONVALUE']}</p>
                 </div> 
-             </div>`
+                <button type="button" class="btn btn-primary btn" onclick="modal('Bonds', '${user_profile}', '${data['Bonds'][key]['ISIN']}', ${data['Bonds'][key]['LAST']})">Добавить</button>
+             </div>
+            
+            </div>`
         }
-        elem += `</div>`
         return elem;
     })
 }
