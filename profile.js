@@ -1,7 +1,7 @@
 let marketdata = 0
 
-async function SetProfile(data) {
-    profile = await GetProfile(tg.initDataUnsafe.user.id)
+async function SetProfile(data, user_profile) {
+    profile = await GetProfile(user_profile)
     var elem = ``;
     $('#sharesContent').html( function () {
         
@@ -150,7 +150,7 @@ function InsertStonk(type, user, ISIN, cost) {
     })
     $('#commonModal').modal('toggle');
     console.log(marketdata)
-    SetProfile(marketdata)
+    SetProfile(marketdata, user)
 }
 
 function RemoveStonk(type, user, ISIN) {
