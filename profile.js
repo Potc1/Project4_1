@@ -1,13 +1,19 @@
-function SetProfile(data) {
-    $('#sharesContent').html(function () {
-        var len = Object.keys(data).length;
-        console.log(len, data)
+let marketdata = 0
+
+async function SetProfile(data) {
+    profile = await GetProfile(tg.initDataUnsafe.user.id)
+    var elem = ``;
+    $('#sharesContent').html( function () {
+        
+        marketdata = data
+        var len = Object.keys(marketdata).length;
+        console.log(len, marketdata)
+        console.log(profile)
         var profileCost = 0;
         var profileIncome = 0;
-        elem = ``;
         elem += `<div id="collapseStonks" class="collapse">` +
             `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
-        for (let key in data['Users']['user']['liked_shares']) {
+        for (let key in profile['liked_shares']) {
             elem += `
             <div class="share">
                     <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Shares'][key]['ISIN']}"
@@ -25,12 +31,12 @@ function SetProfile(data) {
                     <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div>
                 <button type="button" class="btn btn-primary btn" onclick="modal('Shares', 'user', '${data['Shares'][key]['ISIN']}', ${data['Shares'][key]['LAST']})">Изменить</button>
             </div>`
-            profileCost += data['Shares'][key]['LAST'] * data['Shares'][key]['LOTSIZE'] * data['Users']['user']['liked_shares'][key]['count']
-            profileIncome += data['Users']['user']['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * data['Users']['user']['liked_shares'][key]['count'] 
+            profileCost += data['Shares'][key]['LAST'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count']
+            profileIncome += profile['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count'] 
         }
         elem += `</div>`
         $('#costValue').text(profileCost);
-        $('#income_valueValue').text(profileCost+100 - profileIncome)
+        $('#income_valueValue').text(profileCost- profileIncome)
         elem += ``;
         return elem
     })
@@ -38,7 +44,7 @@ function SetProfile(data) {
         var len = Object.keys(data).length;
         elem += `<div id="collapseBonds" class="collapse">` +
             `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
-            for (let key in data['Users']['user']['liked_bonds'])  {
+            for (let key in profile['liked_bonds'])  {
             elem += `
             <div class="bond">
                 <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Bonds'][key]['ISIN']}" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Bonds'][key]['NAME']}</a>
@@ -57,14 +63,62 @@ function SetProfile(data) {
     })
 }
 
+async function GetProfile(user) {
+  try {
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user}&action=Profile`, {
+      method: "GET"
+    });
+
+    if (!response.ok) {
+      throw new Error('Ошибка сети');
+    }
+
+    const data = await response.json(); // ← вот здесь результат
+    return data; // ← сохранили и вернули
+  } catch (err) {
+    console.error('Ошибка запроса:', err);
+    return null; // ← если ошибка — вернуть null
+  }
+}
+
+async function CheckProfile(user_profile){
+    res = await GetProfile(user_profile);
+    if (res != null){
+        console.log('Succes')
+        window.open('profile.html');
+    }
+    console.log('profile not found')
+    ModalCreateProfile(user_profile);
+}
+
 function MakeChart(ISIN, type) {
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&action=chart`, {
+    let response = fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&action=chart`, {
         method: "GET"
     })
         .then(response => response.json())
         .then((data) => Plotly.newPlot(`plot${ISIN}`, data['data'], data['layout']))
     //console.log(chart)  
+    
 }
+
+function ModalCreateProfile(user_profile){
+    var title = "Хотите создать профиль?";
+    var button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+                  `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+
+    $('#commonModal .modal-header .modal-title').html(title);
+    $('#commonModal .modal-body').html('');
+    $('#commonModal .modal-footer').html(button);
+    $('#commonModal').modal('show');          
+}
+
+function CreateProfile(user_profile){
+    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile}&action=Create`, {
+        method: "GET",
+    })
+    $('#commonModal').modal('toggle');
+}
+
 function modal(type, user, ISIN, cost) {
     var title = "Изменить бумагу";
     var input = `
@@ -80,6 +134,7 @@ function modal(type, user, ISIN, cost) {
     $('#commonModal .modal-footer').html(button);
     $('#commonModal').modal('show');
 }
+
 function InsertStonk(type, user, ISIN, cost) {
     var count = document.getElementById('count').value;
     console.log(type, user, ISIN, cost, count);
@@ -94,6 +149,8 @@ function InsertStonk(type, user, ISIN, cost) {
         method: "GET",
     })
     $('#commonModal').modal('toggle');
+    console.log(marketdata)
+    SetProfile(marketdata)
 }
 
 function RemoveStonk(type, user, ISIN) {

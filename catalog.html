@@ -3,41 +3,67 @@
     <head>
         <link rel="stylesheet" href="style.css">
         <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Manrope:wght@700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
-    <body class = "header">
-        <div id="container">
-          <div class = "header">
-            <div class="header-content">
-                <a data-toggle="collapse" href="#collapseStonks"><span class="header-title">Акции</span></a>
-                <div class="header-line"></div>
+
+    <body>
+      <header>
+        <nav class = "navbar">
+          <div class = "navbar-menu">
+            <div>
+                <button onclick="window.location.href='index.html'" class="main-btn">Главная</button>
+            </div>
+            <div>
+                <button onclick="window.location.href='profile.html'" class="main-btn">Мой портфель</button>
             </div>
           </div>
-          <div id="sharesContent"></div>  
-          <div class = "header">
-            <div class="header-content">
-              <a data-toggle="collapse" href="#collapseBonds"><span class="header-title">Облигации</span></a> 
+        </nav>
+      </header>
+      <div class="header-line"></div>
+
+      
+    <div class = "catalog">
+      <div id="container">
+        <div class = "catalog">
+          <div class="catalog-content">
+              <a data-toggle="collapse" href="#collapseStonks"><span class="header-title">Акции</span></a>
               <div class="header-line"></div>
-            </div>
           </div>
-          <div id="bondsContent"></div>
         </div>
-        <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="alert-area mr-3 ml-3"></div>
-                <div class="modal-footer"></div>
-              </div>
+        <div id="sharesContent">
+          <div id="collapseStonks" class="collapse"></div>
+        </div>  
+        <div class = "catalog">
+          <div class="catalog-content">
+            <a data-toggle="collapse" href="#collapseBonds"><span class="header-title">Облигации</span></a> 
+            <div class="header-line"></div>
+          </div>
+        </div>
+        <div id="bondsContent">
+          <div id="collapseBonds" class="collapse"></div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>  
+            <div class="modal-body"></div>
+            <div class="alert-area mr-3 ml-3"></div>
+            <div class="modal-footer"></div>
+          </div>
+        </div>
+      </div> 
+    </div>
+
     </body>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
@@ -53,15 +79,14 @@
 
             // 2️⃣ Конфигурация Firebase (замени своими данными)
             const firebaseConfig = {
-                apiKey: "AIzaSyD2Rtcn5aRuoe3iYCcc4A69emUUs7A17-4",
-                authDomain: "imoex-2f0cb.firebaseapp.com",
-                databaseURL: "https://imoex-2f0cb-default-rtdb.europe-west1.firebasedatabase.app",
-                projectId: "imoex-2f0cb",
-                storageBucket: "imoex-2f0cb.firebasestorage.app",
-                messagingSenderId: "1057428815603",
-                appId: "1:1057428815603:web:63fc54d0e689e5e1978186",
-                measurementId: "G-1H48PEL5RV"
-                };
+              apiKey: "AIzaSyAi77EjCTf-jxeJ6MjKv9hG9-hB8Zw8jNE",
+              authDomain: "imoex2.firebaseapp.com",
+              databaseURL: "https://imoex2-default-rtdb.europe-west1.firebasedatabase.app",
+              projectId: "imoex2",
+              storageBucket: "imoex2.firebasestorage.app",
+              messagingSenderId: "334419845868",
+              appId: "1:334419845868:web:155f088633782940563bc9"
+            };
 
             // 3️⃣ Инициализация Firebase
             const app = initializeApp(firebaseConfig);

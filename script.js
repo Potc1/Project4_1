@@ -1,11 +1,12 @@
+
+
 function SetData(data) {
-    $('#sharesContent').html(function () {
+    $('#collapseStonks').html(function () {
         var len = Object.keys(data).length;
         console.log(len)
 
         elem = ``;
-        elem += `<div id="collapseStonks" class="collapse">` +
-            `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
+        elem += `<table class="table"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
         for (let key in data['Shares']) {
             elem += `
             <div class="share">
@@ -30,10 +31,9 @@ function SetData(data) {
         elem += ``;
         return elem
     })
-    $('#bondsContent').html(function () {
+    $('#collapseBonds').html(function () {
         var len = Object.keys(data).length;
-        elem += `<div id="collapseBonds" class="collapse">` +
-            `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
+        elem += `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
         for (let key in data['Bonds']) {
             elem += `
             <div class="bond">
@@ -90,4 +90,3 @@ function InsertStonk(type, user, ISIN, cost) {
     })
     $('#commonModal').modal('toggle');
 }
-
