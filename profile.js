@@ -29,7 +29,7 @@ async function SetProfile(data, user_profile) {
                     <b>ISIN:</b> ${data['Shares'][key]['ISIN']} <br> <b>OPEN:</b> ${data['Shares'][key]['OPEN']} LOW: ${data['Shares'][key]['LOW']} <br> <b>LAST:</b> ${data['Shares'][key]['LAST']} HIGH: ${data['Shares'][key]['HIGH']} 
                 </div>
                     <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div>
-                <button type="button" class="btn btn-primary btn" onclick="modal('Shares', 'user', '${data['Shares'][key]['ISIN']}', ${data['Shares'][key]['LAST']})">Изменить</button>
+                <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${user_profile}', '${data['Shares'][key]['ISIN']}', ${data['Shares'][key]['LAST']})">Изменить</button>
             </div>`
             profileCost += data['Shares'][key]['LAST'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count']
             profileIncome += profile['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count'] 

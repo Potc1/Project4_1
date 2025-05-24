@@ -87,7 +87,8 @@
               messagingSenderId: "334419845868",
               appId: "1:334419845868:web:155f088633782940563bc9"
             };
-
+            
+            let tg = window.Telegram.WebApp;
             // 3️⃣ Инициализация Firebase
             const app = initializeApp(firebaseConfig);
             const database = getDatabase(app);
@@ -98,7 +99,7 @@
             onValue(dataRef, (snapshot) => {
                 var data = snapshot.val();
                 //console.log("🔥 Обновление данных:", data);
-                SetData(data);
+                SetData(data, tg.initDataUnsafe.user.id);
             });
     </script>
 </html>
