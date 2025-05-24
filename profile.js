@@ -85,10 +85,13 @@ async function CheckProfile(user_profile){
     res = await GetProfile(user_profile);
     if (res != null){
         console.log('Succes')
-        window.open('profile.html');
+        window.location.href = 'profile.html';
+        return;
     }
-    console.log('profile not found')
-    ModalCreateProfile(user_profile);
+    else{
+        console.log('profile not found')
+        ModalCreateProfile(user_profile);
+    }
 }
 
 function MakeChart(ISIN, type) {
