@@ -130,7 +130,7 @@ header {
 .share{
     display: grid;
     justify-items: center;
-    grid-template-columns: 350px repeat(3, 1fr);
+    grid-template-columns: 350px repeat(4, 1fr);
     a{
         width: 50%;
     }
@@ -150,7 +150,11 @@ tr, th {
 
 .bond{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    grid-template-columns: 350px repeat(4, 1fr);
+    a{
+        width: 50%;
+    }
 }
 
 /*Профиль панели доходности, стоимости и тд*/

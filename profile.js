@@ -3,16 +3,17 @@ let marketdata = 0
 async function SetProfile(data, user_profile) {
     profile = await GetProfile(user_profile)
     var elem = ``;
+    var profileCost = 0;
+    var profileBeginPrice = 0;
+    var profile_percent = 0;
     $('#sharesContent').html( function () {
-        
+        `<div class="share><b>Название</b><b>Цена сейчас</b><b>Цена покупки</b><b>Цена мин</b><b>Цена макс</b>"`
         marketdata = data
         var len = Object.keys(marketdata).length;
         console.log(len, marketdata)
         console.log(profile)
-        var profileCost = 0;
-        var profileIncome = 0;
         elem += `<div id="collapseStonks" class="collapse">` +
-            `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
+            `<div class="share"><b>Название</b><b>Цена сейчас</b><b>Цена покупки</b><b>Цена мин</b><b>Цена макс</b></div>`
         for (let key in profile['liked_shares']) {
             elem += `
             <div class="share">
@@ -20,8 +21,8 @@ async function SetProfile(data, user_profile) {
                         onclick="event.preventDefault(); MakeChart('${data['Shares'][key]['ISIN']}', 'Shares');" role="button"
                         aria-expanded="false" aria-controls="collapseExample">${data['Shares'][key]['NAME']}
                     </a>
-                    <p>${data['Shares'][key]['LAST']*data['Shares'][key]['LOTSIZE']*profile['liked_shares'][key]['count']}</p> // стоимость сейчас
-                    <p>${profile['liked_shares'][key]['likedCost']*data['Shares'][key]['LOTSIZE']*profile['liked_shares'][key]['count']}</p> // стоимость покупки
+                    <p>${data['Shares'][key]['LAST']*data['Shares'][key]['LOTSIZE']*profile['liked_shares'][key]['count']}</p> 
+                    <p>${profile['liked_shares'][key]['likedCost']*data['Shares'][key]['LOTSIZE']*profile['liked_shares'][key]['count']}</p> 
                     <p>${data['Shares'][key]['LOW']}</p>
                     <p>${data['Shares'][key]['HIGH']}</p>
             </div>` +
@@ -29,10 +30,10 @@ async function SetProfile(data, user_profile) {
                 <div class = "card card-body">
                     <p><b>ISIN:</b> ${data['Shares'][key]['ISIN']}</p>
                     <p><b>Количество лотов:</b> ${profile['liked_shares'][key]['count']}</p>
-                    <p><b>Цена покупки:</b> ${profile['liked_shares'][key]['likedCost']}</p>
-                    <p><b>Цена открытия:</b> ${data['Shares'][key]['OPEN']}</p>
-                    <p><b>Цена сейчас:</b> ${data['Shares'][key]['LAST']}</p>
-                    <p><b>МИН:</b> ${data['Shares'][key]['LOW']} <b>МАКС</b> ${data['Shares'][key]['HIGH']}</p> 
+                    <p><b>Цена покупки:</b> ${profile['liked_shares'][key]['likedCost']}₽</p>
+                    <p><b>Цена открытия:</b> ${data['Shares'][key]['OPEN']}₽</p>
+                    <p><b>Цена сейчас:</b> ${data['Shares'][key]['LAST']}₽</p>
+                    <p><b>МИН:</b> ${data['Shares'][key]['LOW']}₽ <b>МАКС</b> ${data['Shares'][key]['HIGH']}₽</p> 
                     <p><b>Размер лота</b> ${data['Shares'][key]['LOTSIZE']} акций</p>  
                     <div id="note${data['Shares'][key]['ISIN']}">
                         <p><b>Заметка:</b></p>
@@ -44,11 +45,10 @@ async function SetProfile(data, user_profile) {
                 <button type="button" class="btn btn-primary btn" onclick="NoteModal('${user_profile}', '${data['Shares'][key]['ISIN']}', 'Shares')">Заметка</button>
             </div>`
             profileCost += data['Shares'][key]['LAST'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count']
-            profileIncome += profile['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count'] 
+            profileBeginPrice += profile['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * profile['liked_shares'][key]['count']  // Стоимость портфеля на момент добавления
         }
         elem += `</div>`
-        $('#costValue').text(profileCost);
-        $('#income_valueValue').text(profileCost- profileIncome)
+         // доходность за все время
         elem += ``;
         return elem
     })
@@ -56,14 +56,15 @@ async function SetProfile(data, user_profile) {
     $('#bondsContent').html(function () {
         var len = Object.keys(data).length;
         elem += `<div id="collapseBonds" class="collapse">` +
-            `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
+            `<div class="share"><b>Название</b><b>Номинал</b><b>Цена мин</b><b>Цена макс</b><b>Доходность</b></div>`
             for (let key in profile['liked_bonds'])  {
             elem += `
             <div class="bond">
                 <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Bonds'][key]['ISIN']}" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Bonds'][key]['NAME']}</a>
-                <p>${data['Bonds'][key]['OPEN']}</p>
-                <p>${data['Bonds'][key]['OPEN']}</p>
-                <p>${data['Bonds'][key]['OPEN']}</p>` +
+                <p>${data['Bonds'][key]['LOTVALUE']}</p>
+                <p>${data['Bonds'][key]['LOW']}</p>
+                <p>${data['Bonds'][key]['HIGH']}</p>
+                <p>${data['Bonds'][key]['YIELD']}</p>` +
                 `</div>` +
                 `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}">
                 <div class = "card card-body">
@@ -83,10 +84,17 @@ async function SetProfile(data, user_profile) {
                 <button type="button" class="btn btn-primary btn" onclick="modal('Bonds', '${user_profile}', '${data['Bonds'][key]['ISIN']}', ${data['Bonds'][key]['LAST']})">Изменить</button>
                 <button type="button" class="btn btn-primary btn" onclick="NoteModal('${user_profile}', '${data['Bonds'][key]['ISIN']}', 'Bonds')">Заметка</button>
             </div>`
+            profileCost += (data['Bonds'][key]['LAST'] / 100) * data['Bonds'][key]['LOTVALUE'] * profile['liked_bonds'][key]['count']
+            profileBeginPrice += (profile['liked_bonds'][key]['likedCost'] / 100 )* data['Bonds'][key]['LOTVALUE'] * profile['liked_bonds'][key]['count']
         }
         
         return elem;
     })
+    $('#costValue').text(profileCost+'₽');
+    //    profileCost- profileBeginPrice
+    $('#income_valueValue').text(profileCost- profileBeginPrice);
+    $('#income_percentValue').text((profileCost- profileBeginPrice) / profileBeginPrice)
+
 }
 
 async function GetProfile(user) {

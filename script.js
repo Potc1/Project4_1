@@ -6,7 +6,7 @@ function SetData(data, user_profile) {
         console.log(len)
 
         elem = ``;
-        elem += `<table class="table"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
+        elem += `<div class="share"><b>Название</b><b>Размер лота</b><b>Цена мин</b><b>Цена макс</b></div>`
         for (let key in data['Shares']) {
             elem += `
             <div class="share">
@@ -38,14 +38,14 @@ function SetData(data, user_profile) {
     var elem = ``;
     $('#collapseBonds').html(function () {
         var len = Object.keys(data).length;
-        elem += `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
+        elem += `<div class="share"><b>Название</b><b>Номинал</b><b>Цена мин</b><b>Цена макс</b></div>`
         for (let key in data['Bonds']) {
             elem += `
             <div class="bond">
                 <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Bonds'][key]['ISIN']}" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Bonds'][key]['NAME']}</a>
-                <p>${data['Bonds'][key]['OPEN']}</p>
-                <p>${data['Bonds'][key]['OPEN']}</p>
-                <p>${data['Bonds'][key]['OPEN']}</p>` +
+                <p>${data['Bonds'][key]['LOTVALUE']}</p>
+                <p>${data['Bonds'][key]['LOW']}</p>
+                <p>${data['Bonds'][key]['HIGH']}</p>` +
                 `</div>` +
                 `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}">
                 <div class="card card-body">
