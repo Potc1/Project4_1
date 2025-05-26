@@ -1,22 +1,11 @@
-a:link {
-    color: black;
-    text-decoration: dashed;
-}
-
-:root {
-    --primary: #2563eb;      /* Синий (доверие) */
-    --secondary: #059669;    /* Зеленый (рост) */
-    --accent: #d97706;       /* Оранжевый (активность) */
-    --dark: #1e293b;         /* Тёмный фон */
-    --light: #f8fafc;        /* Светлый текст */
-    --card-bg: #ffffff;      /* Фон карточек */
-    --border: #e2e8f0;       /* Границы */
-}
-
-#maintext {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3 {
@@ -28,58 +17,138 @@ h1 {
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
-    font-size: 2.5rem;
+    font-size: 4rem;
 }
 
-/*  
-    background: #00458a63;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-*/
+/*Адаптивность*/
+@media (max-width: 575px) {
+  .modal-content {
+    border-radius: 0;
+  }
+}
 
-/*Лучше использовать классы, они универсальнее*/
-/*Горизонталь-вертикаль для расположения кнопок (от ширины экрана)*/
-@media (max-width: 600px) {
-    .main-menu {
-      flex-direction: column;
-      gap: 15px;
-      padding: 15px;
+@media (max-width: 767px) {
+  h1 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .navbar {
+    padding: 15px;
+    min-height: auto;
+  }
+
+  .navbar-menu {
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px 0;
+  }
+
+  .main-btn {
+    font-size: 16;
+    width: 100%;
+    max-width: 340px;
+    padding: 14px 28px;
+  }
+
+  .modal-dialog {
+    margin: 0;
+    max-width: 100%;
+    min-height: 100vh;
+  }
+
+  .catalog {
+    padding: 10px;
+  }
+  
+  .header-title {
+    font-size: 1.4rem;
+    padding: 8px 0;
+  }
+  
+  .catalog-content {
+    padding: 10px;
+  }
+  
+  .compact-navbar {
+    height: 100px !important;
+    min-height: 100px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    
+    .header-title {
+        font-size: 1.6rem;
+    }
+    
+    .catalog {
+        padding: 15px;
+    }
+    .navbar-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .main-btn {
+        font-size: 17px;
+        padding: 15px 32px;
     }
 }
 
-/*1. Лёгкая анимация*/
+/*1. Анимация*/
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 /*Главное меню*/
+#maintext {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .navbar {
+    width: 100%;
+    min-height: 100vh;
     background: linear-gradient(90deg, #2A7B9B, #57C785, #EDDD53);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.514);
     border-radius: 10px;
     animation: fadeIn 0.5s ease-out; /*1*/
+    justify-content: center;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .navbar-menu {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 20px;
     padding: 20px;
     border-radius: 10px;
-    max-width: 600px;
     margin: 0 auto;
 }
 
+.compact-navbar {
+  min-height: 120px !important;
+  height: 120px;
+}
+
 .main-btn {
+    white-space: nowrap;
     font-family: 'Manrope', sans-serif;
-    padding: 14px 32px;
+    padding: 18px 36px;
     background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 650;
     letter-spacing: 0.5px;
     cursor: pointer;
     transition: all 0.3s;
@@ -109,6 +178,15 @@ h1 {
 /*Главное меню*/
 /*Акции*/
 
+.header-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.8rem;
+  color: #333;
+  display: block;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
 header {
     padding: 1%;
 }
@@ -130,7 +208,7 @@ header {
 .share{
     display: grid;
     justify-items: center;
-    grid-template-columns: 350px repeat(4, 1fr);
+    grid-template-columns:  repeat(5, 1fr);
     a{
         width: 50%;
     }
@@ -151,7 +229,7 @@ tr, th {
 .bond{
     display: grid;
     justify-items: center;
-    grid-template-columns: 350px repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     a{
         width: 50%;
     }
@@ -194,13 +272,14 @@ tr, th {
 }
 
 .catalog {
-    background: linear-gradient(to top, 
-    #1d1d1d48 0%, 
-    #ffffff 50%, 
-    #eeeeee 100%);
+    /*
+    
+    */
 
+    width: 100%;   
+    padding: 20px;
+    box-sizing: border-box;
     border-radius: 4px;
-    padding: 15px 0;
     display: grid;
     flex-direction: column;
     align-items: center;
@@ -209,14 +288,27 @@ tr, th {
 }
 
 .catalog-content {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.collapse {
+  padding: 15px 0;
+}
+
+.collapsing {
+  transition: height 0.3s ease;
 }
 
 /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.514);*/
