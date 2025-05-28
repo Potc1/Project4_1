@@ -293,6 +293,7 @@ thead th {
 }
 #stickyButton{
   position: sticky;
+  top: 0;
 }
 .accordion-btn {
   width: 100%;
