@@ -291,9 +291,10 @@ thead th {
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
-.accordion-btn {
+#stickyButton{
   position: sticky;
+}
+.accordion-btn {
   width: 100%;
   padding: 15px 20px;
   background: linear-gradient(90deg, #2A7B9B, #57C785);
