@@ -293,6 +293,7 @@ thead th {
 }
 
 .accordion-btn {
+  position: sticky;
   width: 100%;
   padding: 15px 20px;
   background: linear-gradient(90deg, #2A7B9B, #57C785);
