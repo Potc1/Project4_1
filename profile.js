@@ -17,6 +17,7 @@ function formatPrice(price) {
 // Функция обновления таблицы акций
 async function updateAssetTable(data, containerId, assetType, userId) {
   let profileData = await GetProfile(userId);
+  console.log(profileData)
   const tbody = $(`#${containerId}`);
   tbody.empty();
 
