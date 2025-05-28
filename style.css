@@ -70,11 +70,14 @@ h1 {
     padding: 10px;
   }
   
+  /*
+  height: 100px !important;
+  min-height: 100px !important;
+  */
   .compact-navbar {
-    display: flex;
-    align-items: center;
-    min-height: 120px;
-    height: unset;
+    min-height: auto !important;
+    height: auto;
+    padding: 15px 10px;
   }
 }
 
@@ -137,8 +140,10 @@ h1 {
 }
 
 .compact-navbar {
-  min-height: 120px !important;
-  height: 120px;
+    display: flex;
+    align-items: center;
+    min-height: 120px;
+    height: unset;
 }
 
 .main-btn {
@@ -200,53 +205,54 @@ header {
     margin-bottom: 1%;
 }
 
-/*Акции*/
-
-.card card-body {
-    background: #3a3a3a;
+@media (max-width: 767px) {
+  .table td, .table th {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  .table th {
+    white-space: nowrap; /* Заголовки в одну строку */
+  }
 }
 
-/*Стили блоков акциий и облигаций в рынке и профиле*/
-.share{
-    display: grid;
-    justify-items: center;
-    grid-template-columns:  repeat(5, 1fr);
-    a{
-        width: 50%;
-    }
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+  .table-responsive {
+    border: 1px solid #ddd;
+  }
 }
 
 .table {
-    width: 100%;
-  border-collapse: collapse;
+  font-family: 'Inter', sans-serif;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-tr, th {
-    text-align: center;
-    vertical-align: middle;
-    padding: 12px;
-    border: 1px solid #ddd;
+.table th {
+  font-weight: 700;
+  background-color: #2A7B9B;
+  color: white;
 }
 
-.bond{
-    display: grid;
-    justify-items: center;
-    grid-template-columns: repeat(5, 1fr);
-    a{
-        width: 50%;
-    }
+.table td, .table th {
+  padding: 12px 15px;
+  vertical-align: middle;
 }
 
+/*Акции*/
+/*Стили блоков акциий и облигаций в рынке и профиле*/
 /*Профиль панели доходности, стоимости и тд*/
 
-#profile{
+#profile {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 10px;
 }
 
-#cost{
+#cost {
     display: grid;
     grid-gap: 5px;
     align-content: center;
@@ -255,7 +261,7 @@ tr, th {
     border-radius: 13px;
 }
 
-#income_value{
+#income_value {
     display: grid;
     grid-gap: 5px;
     align-content: center;
@@ -264,7 +270,7 @@ tr, th {
     border-radius: 13px;
 }
 
-#income_percent{
+#income_percent {
     display: grid;
     grid-gap: 5px;
     align-content: center;
@@ -273,44 +279,106 @@ tr, th {
     border-radius: 13px;
 }
 
-.catalog {
-    /*
-    
-    */
-
-    width: 100%;   
-    padding: 20px;
-    box-sizing: border-box;
-    border-radius: 4px;
-    display: grid;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+.catalog-accordion {
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.catalog-content {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    font-size: 24px;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+.accordion-btn {
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #2A7B9B, #57C785);
+  border: none;
+  color: white;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
-.collapse {
-  padding: 15px 0;
+.accordion-btn:hover {
+  background: linear-gradient(90deg, #1e6a8c, #4ab074);
+}
+
+.accordion-btn.collapsed .accordion-icon {
+  transform: rotate(0deg);
+}
+
+.accordion-icon {
+  font-size: 1.5rem;
+  transform: rotate(360deg);
+  transition: transform 0.3s ease;
+}
+
+/* Адаптивность */
+@media (max-width: 767px) {
+  .accordion-btn {
+    padding: 12px 15px;
+    font-size: 1rem;
+  }
+  
+  .accordion-icon {
+    font-size: 1.2rem;
+  }
+}
+
+.collapse:not(.show) {
+  display: none;
 }
 
 .collapsing {
-  transition: height 0.3s ease;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.35s ease;
 }
 
-/*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.514);*/
+.chart-loading {
+  transition: opacity 0.3s ease;
+}
+
+@keyframes levitate {
+  0%, 100% {
+    transform: 
+      rotateX(15deg) 
+      rotateY(15deg)
+      translateY(10);
+    animation-timing-function: ease-in-out;
+  }
+  25% {
+    transform: 
+      rotateX(20deg) 
+      rotateY(-15deg)
+      translateY(-20px);
+  }
+  50% {
+    transform: 
+      rotateX(-15deg) 
+      rotateY(18deg)
+      translateY(-15px);
+  }
+  75% {
+    transform: 
+      rotateX(18deg) 
+      rotateY(-13deg)
+      translateY(-18px);
+  }
+}
+
+.levitating-text {
+  animation: levitate 8s ease-in-out infinite;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 4rem;
+  display: inline-block;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+#stocksTable .asset-link { color: #2A7B9B; }
+#bondsTable .asset-link { color: #6c757d; }
