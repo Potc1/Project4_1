@@ -181,7 +181,7 @@ function MakeChart(ISIN, type) {
 // Делаем функции доступными глобально
 window.SetData = SetData;
 window.MakeChart = MakeChart;
-windwo.CheckProfile = CheckProfile;
+window.CheckProfile = CheckProfile;
 
 async function GetProfile(user) {
   try {
