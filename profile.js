@@ -44,19 +44,19 @@ async function updateAssetTable(data, containerId, assetType, userId) {
     console.log(sortedAssets)
     sortedAssets.forEach(asset => {
       const row = `
-        <tr data-isin="${asset.ISIN || ''}">
+        <tr data-isin="${asset || ''}">
           <td>
             <a href="#" class="asset-link" 
-               data-isin="${asset.ISIN || ''}"
+               data-isin="${asset || ''}"s
                data-type="${assetType}"
-               data-name="${asset.NAME || ''}">
-              ${asset.NAME || 'Без названия'}
+               data-name="${data[asset]['Name'] || ''}">
+              ${data[asset]['Name'] || 'Без названия'}
             </a>
-            <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; height: 300px;"></div>
+            <div id="chart-${ISIN || ''}" class="mt-3" style="display:none; height: 300px;"></div>
           </td>
-          <td class="text-end">${asset.LOTSIZE || 1}</td>
-          <td class="text-end">${formatPrice(asset.LOW)}</td>
-          <td class="text-end">${formatPrice(asset.HIGH)}</td>
+          <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+          <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+          <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
         </tr>
       `;
       tbody.append(row);
