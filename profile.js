@@ -236,7 +236,7 @@ function SetNote(user, ISIN, type, flag){
 }
 
 async function CheckProfile(user_profile){
-    res = await GetProfile(user_profile);
+    let res = await GetProfile(user_profile);
     if (res != null){
         console.log('Succes')
         window.location.href = 'profile.html';
