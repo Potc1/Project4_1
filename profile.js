@@ -44,7 +44,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
     console.log(sortedAssets)
     sortedAssets.forEach(asset => {
       
-      console.log(data[assetType][`${asset}`]);
+      console.log(data[asset]);
     });
   } catch (error) {
     console.error(`Ошибка при обновлении таблицы ${assetType}:`, error);
