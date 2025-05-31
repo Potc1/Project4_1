@@ -16,7 +16,9 @@ function formatPrice(price) {
 
 // Функция обновления таблицы акций
 async function updateAssetTable(data, containerId, assetType, userId) {
+  
   let profileData = await GetProfile(userId);
+  marketdata = data;
   console.log(profileData)
   const tbody = $(`#${containerId}`);
   tbody.empty();
@@ -27,17 +29,23 @@ async function updateAssetTable(data, containerId, assetType, userId) {
   }
 
   try {
-    const assetsArray = Object.entries(data)
-      .map(([key, value]) => ({ ...value, id: key }))
-      .filter(asset => asset && asset.NAME);
-
+    if (assetType == 'Shares'){
+      const assetsArray = Object.entries(profileData['liked_shares'])
+        .map(([key, value]) => ({ ...value, id: key }))
+        .filter(asset => asset && asset.NAME);
+    }
+    else{
+      const assetsArray = Object.entries(profileData['liked_bonds'])
+        .map(([key, value]) => ({ ...value, id: key }))
+        .filter(asset => asset && asset.NAME);
+    }
     if (assetsArray.length === 0) {
       tbody.html('<tr><td colspan="4" class="text-center">Нет корректных данных</td></tr>');
       return;
     }
 
     const sortedAssets = assetsArray.sort((a, b) => (a.NAME || '').localeCompare(b.NAME || ''));
-
+    console.log(sortedAssets)
     sortedAssets.forEach(asset => {
       const row = `
         <tr data-isin="${asset.ISIN || ''}">

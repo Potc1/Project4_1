@@ -46,7 +46,7 @@ function updateAssetTable(data, containerId, assetType) {
             </a>
             <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; height: 300px;"></div>
           </td>
-          <td class="text-end">${asset.LOTSIZE || 1}</td>
+          <td class="text-end">${asset.LOTSIZE || asset.LOTVALUE}</td>
           <td class="text-end">${formatPrice(asset.LOW)}</td>
           <td class="text-end">${formatPrice(asset.HIGH)}</td>
         </tr>
