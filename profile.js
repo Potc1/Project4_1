@@ -49,14 +49,14 @@ async function updateAssetTable(data, containerId, assetType, userId) {
             <a href="#" class="asset-link" 
                data-isin="${asset || ''}"s
                data-type="${assetType}"
-               data-name="${data[asset]['Name'] || ''}">
-              ${data[asset]['Name'] || 'Без названия'}
+               data-name="${data[assetType][asset]['Name'] || ''}">
+              ${data[assetType][asset]['Name'] || 'Без названия'}
             </a>
-            <div id="chart-${ISIN || ''}" class="mt-3" style="display:none; height: 300px;"></div>
+            <div id="chart-${data[assetType][asset]['ISIN'] || ''}" class="mt-3" style="display:none; height: 300px;"></div>
           </td>
           <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
-          <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
-          <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+          <td class="text-end">${formatPrice(data[assetType][asset]['LOW'])}</td>
+          <td class="text-end">${formatPrice(data[assetType][asset]['HIGH'])}</td>
         </tr>
       `;
       tbody.append(row);
