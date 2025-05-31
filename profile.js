@@ -1,4 +1,4 @@
-assetTyplet marketdata = 0
+let marketdata = 0
 
 // Firebase импорты
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
