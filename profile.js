@@ -33,7 +33,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
       assetsArray = Object.keys(profileData['liked_shares'])
     }
     else{
-      assetsArray = Object.entries(profileData['liked_bonds'])
+      assetsArray = Object.keys(profileData['liked_bonds'])
     }
     if (assetsArray.length === 0) {
       tbody.html('<tr><td colspan="4" class="text-center">Нет корректных данных</td></tr>');
