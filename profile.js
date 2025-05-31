@@ -1,104 +1,321 @@
-function SetProfile(data) {
-    $('#sharesContent').html(function () {
-        var len = Object.keys(data).length;
-        console.log(len, data)
-        var profileCost = 0;
-        var profileIncome = 0;
-        elem = ``;
-        elem += `<div id="collapseStonks" class="collapse">` +
-            `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
-        for (let key in data['Users']['user']['liked_shares']) {
-            elem += `
-            <div class="share">
-                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Shares'][key]['ISIN']}"
-                        onclick="event.preventDefault(); MakeChart('${data['Shares'][key]['ISIN']}', 'Shares');" role="button"
-                        aria-expanded="false" aria-controls="collapseExample">${data['Shares'][key]['NAME']}
-                    </a>
-                    <p>${data['Shares'][key]['LOTSIZE']}</p>
-                    <p>${data['Shares'][key]['LOW']}</p>
-                    <p>${data['Shares'][key]['HIGH']}</p>
-            </div>` +
-                `<div class="collapse" id="collapseExample${data['Shares'][key]['ISIN']}">
-                <div class = "card card-body">
-                    <b>ISIN:</b> ${data['Shares'][key]['ISIN']} <br> <b>OPEN:</b> ${data['Shares'][key]['OPEN']} LOW: ${data['Shares'][key]['LOW']} <br> <b>LAST:</b> ${data['Shares'][key]['LAST']} HIGH: ${data['Shares'][key]['HIGH']} 
-                </div>
-                    <div style="max-width: 100%; height: 450px; margin: auto" id="plot${data['Shares'][key]['ISIN']}" class="js-plotly-plot"></div>
-                <button type="button" class="btn btn-primary btn" onclick="modal('Shares', 'user', '${data['Shares'][key]['ISIN']}', ${data['Shares'][key]['LAST']})">Изменить</button>
-            </div>`
-            profileCost += data['Shares'][key]['LAST'] * data['Shares'][key]['LOTSIZE'] * data['Users']['user']['liked_shares'][key]['count']
-            profileIncome += data['Users']['user']['liked_shares'][key]['likedCost'] * data['Shares'][key]['LOTSIZE'] * data['Users']['user']['liked_shares'][key]['count'] 
-        }
-        elem += `</div>`
-        $('#costValue').text(profileCost);
-        $('#income_valueValue').text(profileCost+100 - profileIncome)
-        elem += ``;
-        return elem
-    })
-    $('#bondsContent').html(function () {
-        var len = Object.keys(data).length;
-        elem += `<div id="collapseBonds" class="collapse">` +
-            `<table class="table text-center table-hover"><thead><tr><th>Название</th><th>Размер лота</th><th>Цена мин</th><th>Цена макс</th></thead></table>`
-            for (let key in data['Users']['user']['liked_bonds'])  {
-            elem += `
-            <div class="bond">
-                <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample${data['Bonds'][key]['ISIN']}" role="button" aria-expanded="false" aria-controls="collapseExample">${data['Bonds'][key]['NAME']}</a>
-                <p>${data['Bonds'][key]['OPEN']}</p>
-                <p>${data['Bonds'][key]['OPEN']}</p>
-                <p>${data['Bonds'][key]['OPEN']}</p>` +
-                `</div>` +
-                `<div class="collapse" id="collapseExample${data['Bonds'][key]['ISIN']}">
-                <div class="card card-body">
-                    ISIN: ${data['Bonds'][key]['ISIN']} <br> <br> OPEN: ${data['Bonds'][key]['OPEN']} <br> LAST: ${data['Bonds'][key]['LAST']}  
-                </div> 
-             </div>`
-        }
-        elem += `</div>`
-        return elem;
-    })
+let marketdata = 0
+
+// Firebase импорты
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Глобальные переменные
+let tg;
+let database;
+
+// Форматирование цены
+function formatPrice(price) {
+  if (!price) return '0.00 ₽';
+  return parseFloat(price).toFixed(2) + ' ₽';
 }
 
-function MakeChart(ISIN, type) {
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&action=chart`, {
-        method: "GET"
-    })
-        .then(response => response.json())
-        .then((data) => Plotly.newPlot(`plot${ISIN}`, data['data'], data['layout']))
-    //console.log(chart)  
+// Функция обновления таблицы акций
+async function updateAssetTable(data, containerId, assetType, userId) {
+
+  let profileData = await GetProfile(userId);
+  marketdata = data;
+  console.log(profileData)
+  const tbody = $(`#${containerId}`);
+  tbody.empty();
+
+  if (!data || Object.keys(data).length === 0) {
+    tbody.html('<tr><td colspan="4" class="text-center">Нет данных для отображения</td></tr>');
+    return;
+  }
+  let assetsArray = 0
+  try {
+    if (assetType == 'Shares') {
+      assetsArray = Object.keys(profileData['liked_shares'])
+    }
+    else {
+      assetsArray = Object.keys(profileData['liked_bonds'])
+    }
+    if (assetsArray.length === 0) {
+      tbody.html('<tr><td colspan="4" class="text-center">Нет корректных данных</td></tr>');
+      return;
+    }
+
+    const sortedAssets = assetsArray.sort((a, b) => (a.NAME || '').localeCompare(b.NAME || ''));
+    console.log(sortedAssets)
+    sortedAssets.forEach(asset => {
+      const row = `
+        <tr data-isin="${asset || ''}">
+          <td>
+            <a href="#" class="asset-link" 
+               data-isin="${asset || ''}"s
+               data-type="${assetType}"
+               data-name="${data[asset]['NAME'] || ''}">
+              ${data[asset]['NAME'] || 'Без названия'}
+            </a>
+            <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; height: 300px;"></div>
+          </td>
+          <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+          <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+          <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+        </tr>
+      `;
+      tbody.append(row);
+    });
+  } catch (error) {
+    console.error(`Ошибка при обновлении таблицы ${assetType}:`, error);
+    tbody.html('<tr><td colspan="4" class="text-center text-danger">Ошибка загрузки данных</td></tr>');
+  }
 }
+
+// Основная функция обработки данных
+function SetData(data, userId) {
+  if (!data) {
+    console.error("Данные не определены");
+    return;
+  }
+
+  if (data.Shares) {
+    updateAssetTable(data.Shares, 'stocksData', 'Shares', userId);
+  } else {
+    $('#stocksData').html('<tr><td colspan="4" class="text-center">Акции не найдены</td></tr>');
+  }
+
+  if (data.Bonds) {
+    updateAssetTable(data.Bonds, 'bondsData', 'Bonds', userId);
+  } else {
+    $('#bondsData').html('<tr><td colspan="4" class="text-center">Облигации не найдены</td></tr>');
+  }
+}
+
+// Инициализация Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAi77EjCTf-jxeJ6MjKv9hG9-hB8Zw8jNE",
+  authDomain: "imoex2.firebaseapp.com",
+  databaseURL: "https://imoex2-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "imoex2",
+  storageBucket: "imoex2.firebasestorage.app",
+  messagingSenderId: "334419845868",
+  appId: "1:334419845868:web:155f088633782940563bc9"
+};
+
+const app = initializeApp(firebaseConfig);
+database = getDatabase(app);
+const dataRef = ref(database, "/");
+
+// Инициализация Telegram WebApp
+function initTelegramWebApp() {
+  if (typeof Telegram !== 'undefined') {
+    tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.BackButton.show();
+    tg.BackButton.onClick(() => {
+      $('.stock-chart').hide();
+      tg.BackButton.hide();
+    });
+    console.log("Telegram WebApp инициализирован");
+  }
+}
+
+// Подписка на изменения данных
+function initFirebaseListener() {
+  onValue(dataRef, (snapshot) => {
+    try {
+      const data = snapshot.val();
+      console.log("Получены данные из Firebase:", data);
+
+      const userId = tg?.initDataUnsafe?.user?.id || 'user';
+      SetData(data, userId);
+    } catch (error) {
+      console.error("Ошибка при обработке данных из Firebase:", error);
+    }
+  });
+}
+
+// Инициализация при загрузке страницы
+$(document).ready(function () {
+  console.log("Документ готов");
+
+  initTelegramWebApp();
+  initFirebaseListener();
+
+  // Обработчик для аккордеона
+  $('.accordion-btn').click(function () {
+    const icon = $(this).find('.accordion-icon');
+    icon.text(icon.text() === '+' ? '-' : '+');
+  });
+
+  // Обработчик клика по акциям
+  $(document).on('click', '.asset-link', function (e) {
+    e.preventDefault();
+    const isin = $(this).data('isin');
+    const type = $(this).data('type');
+    const chartDiv = $(`#chart-${isin}`);
+
+    if (chartDiv.is(':visible')) {
+      chartDiv.hide();
+    } else {
+      $('.stock-chart').hide();
+      MakeChart(isin, type);
+    }
+  });
+});
+
+// Функция для отображения графика
+function MakeChart(ISIN, type) {
+  const chartDiv = $(`#chart-${ISIN}`);
+  chartDiv.show().html(`
+    <div class="chart-loading text-center py-4">
+      <p class="mt-2">Загрузка графика...</p>
+    </div>`);
+
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&action=chart`)
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.data) {
+        chartDiv.empty();
+        Plotly.newPlot(`chart-${ISIN}`, data.data, data.layout);
+      } else {
+        chartDiv.html('<div class="text-center text-danger py-4">Данные графика не получены</div>');
+      }
+    })
+    .catch(error => {
+      console.error("Ошибка при загрузке графика:", error);
+      chartDiv.html('<div class="text-center text-danger py-4">Ошибка загрузки графика</div>');
+    });
+}
+// Делаем функции доступными глобально
+window.SetData = SetData;
+window.MakeChart = MakeChart;
+window.CheckProfile = CheckProfile;
+
+async function GetProfile(user) {
+  try {
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user}&action=Profile`, {
+      method: "GET"
+    });
+
+    if (!response.ok) {
+      throw new Error('Ошибка сети');
+    }
+
+    const data = await response.json(); // ← вот здесь результат
+    return data; // ← сохранили и вернули
+  } catch (err) {
+    console.error('Ошибка запроса:', err);
+    return null; // ← если ошибка — вернуть null
+  }
+}
+
+function NoteModal(user, ISIN, type) {
+  var title = "Изменить заметку";
+  var input = `
+    <div class="form-group">
+					<label for="count">Введите заметку</label>
+					<input id="note" name="заметка" class="form-control form-control-sm" type="text">
+     </div>`
+  var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
+  var button = `<button type="button" class="btn btn-success" onclick="SetNote('${user}', '${ISIN}', '${type}', true)" data->Подтвердить</button>` +
+    `<button type="button" class="btn btn-danger" onclick="SetNote('${user}', '${ISIN}', '${type}', false)" data->Удалить</button>`;
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(form);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
+}
+function SetNote(user, ISIN, type, flag) {
+  if (flag == true) {
+    var note = document.getElementById('note').value
+  }
+  else {
+    note = "";
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&profile=${user}&user_note=${note}&action=note`, {
+    method: "GET"
+  })
+  $('#commonModal').modal('toggle');
+  SetProfile(marketdata, user);
+}
+
+async function CheckProfile(user_profile) {
+  let res = await GetProfile(user_profile);
+  if (res != null) {
+    console.log('Succes')
+
+    window.location.href = 'profile.html';
+    return;
+  }
+  else {
+    console.log('profile not found')
+    ModalCreateProfile(user_profile, "Create");
+  }
+}
+
+async function ModalCreateProfile(user_profile, type) {
+  let title = ``;
+  let button = ``;
+  switch (type){
+    case "Create":
+      title = "Хотите создать профиль?";
+      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+      break;
+    case "Choose":
+      let profile = await GetProfile(user_profile);
+      title = `Выберете профиль ${profile}`;
+      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+      break;
+  }
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html('');
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
+}
+
+function CreateProfile(user_profile) {
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile}&action=Create`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
+}
+
 function modal(type, user, ISIN, cost) {
-    var title = "Изменить бумагу";
-    var input = `
+  var title = "Изменить бумагу";
+  var input = `
     <div class="form-group">
 					<label for="count">Введите количество бумаг</label>
 					<input id="count" name="email" class="form-control form-control-sm" type="text">
      </div>`
-    var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
-    var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
-                  `<button type="button" class="btn btn-danger" onclick="RemoveStonk('${type}', '${user}', '${ISIN}')" data->Удалить</button>`;
-    $('#commonModal .modal-header .modal-title').html(title);
-    $('#commonModal .modal-body').html(form);
-    $('#commonModal .modal-footer').html(button);
-    $('#commonModal').modal('show');
+  var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
+  var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
+    `<button type="button" class="btn btn-danger" onclick="RemoveStonk('${type}', '${user}', '${ISIN}')" data->Удалить</button>`;
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(form);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
 }
+
 function InsertStonk(type, user, ISIN, cost) {
-    var count = document.getElementById('count').value;
-    console.log(type, user, ISIN, cost, count);
-    data = {
-        type: type,
-        user: user,
-        ISIN: ISIN,
-        cost: cost,
-        count: count
-    }
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&count=${count}&cost=${cost}&action=Insert`, {
-        method: "GET",
-    })
-    $('#commonModal').modal('toggle');
+  var count = document.getElementById('count').value;
+  console.log(type, user, ISIN, cost, count);
+  data = {
+    type: type,
+    user: user,
+    ISIN: ISIN,
+    cost: cost,
+    count: count
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&count=${count}&cost=${cost}&action=Insert`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
+  console.log(marketdata)
+  SetProfile(marketdata, user)
 }
 
 function RemoveStonk(type, user, ISIN) {
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&action=Remove`, {
-        method: "GET",
-    })
-    $('#commonModal').modal('toggle');
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&action=Remove`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
+  SetProfile(marketdata, user);
 }
