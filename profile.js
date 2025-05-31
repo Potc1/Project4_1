@@ -43,8 +43,23 @@ async function updateAssetTable(data, containerId, assetType, userId) {
     const sortedAssets = assetsArray.sort((a, b) => (a.NAME || '').localeCompare(b.NAME || ''));
     console.log(sortedAssets)
     sortedAssets.forEach(asset => {
-      
-      console.log(data[asset]);
+      const row = `
+        <tr data-isin="${asset || ''}">
+          <td>
+            <a href="#" class="asset-link" 
+               data-isin="${asset || ''}"s
+               data-type="${assetType}"
+               data-name="${data[asset]['NAME'] || ''}">
+              ${data[asset]['NAME'] || 'Без названия'}
+            </a>
+            <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; height: 300px;"></div>
+          </td>
+          <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+          <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+          <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+        </tr>
+      `;
+      tbody.append(row);
     });
   } catch (error) {
     console.error(`Ошибка при обновлении таблицы ${assetType}:`, error);
