@@ -49,8 +49,8 @@ async function updateAssetTable(data, containerId, assetType, userId) {
             <a href="#" class="asset-link" 
                data-isin="${asset || ''}"s
                data-type="${assetType}"
-               data-name="${data[assetType][asset]['Name'] || ''}">
-              ${data[assetType][asset]['Name'] || 'Без названия'}
+               data-name="${data[assetType][asset]['NAME'] || ''}">
+              ${data[assetType][asset]['NAME'] || 'Без названия'}
             </a>
             <div id="chart-${data[assetType][asset]['ISIN'] || ''}" class="mt-3" style="display:none; height: 300px;"></div>
           </td>
