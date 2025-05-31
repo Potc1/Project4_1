@@ -30,14 +30,10 @@ async function updateAssetTable(data, containerId, assetType, userId) {
   let assetsArray = 0 
   try {
     if (assetType == 'Shares'){
-      assetsArray = Object.entries(profileData['liked_shares'])
-        .map(([key, value]) => ({ ...value, id: key }))
-        .filter(asset => asset && asset.NAME);
+      assetsArray = Object.keys(profileData['liked_shares'])
     }
     else{
       assetsArray = Object.entries(profileData['liked_bonds'])
-        .map(([key, value]) => ({ ...value, id: key }))
-        .filter(asset => asset && asset.NAME);
     }
     if (assetsArray.length === 0) {
       tbody.html('<tr><td colspan="4" class="text-center">Нет корректных данных</td></tr>');
