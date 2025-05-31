@@ -1,4 +1,4 @@
-let marketdata = 0
+assetTyplet marketdata = 0
 
 // Firebase импорты
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -27,15 +27,15 @@ async function updateAssetTable(data, containerId, assetType, userId) {
     tbody.html('<tr><td colspan="4" class="text-center">Нет данных для отображения</td></tr>');
     return;
   }
-
+  let assetsArray = 0 
   try {
     if (assetType == 'Shares'){
-      const assetsArray = Object.entries(profileData['liked_shares'])
+      assetsArray = Object.entries(profileData['liked_shares'])
         .map(([key, value]) => ({ ...value, id: key }))
         .filter(asset => asset && asset.NAME);
     }
     else{
-      const assetsArray = Object.entries(profileData['liked_bonds'])
+      assetsArray = Object.entries(profileData['liked_bonds'])
         .map(([key, value]) => ({ ...value, id: key }))
         .filter(asset => asset && asset.NAME);
     }
