@@ -60,6 +60,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
         </tr>
       `;
       tbody.append(row);
+      console.log(asset)
     });
   } catch (error) {
     console.error(`Ошибка при обновлении таблицы ${assetType}:`, error);
