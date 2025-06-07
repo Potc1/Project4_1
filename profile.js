@@ -262,7 +262,7 @@ async function ModalCreateProfile(user_profile, type) {
     case "Choose":
       let profile = await GetProfile(user_profile);
       title = `Выберете профиль`;
-      for(elem in profile){
+      for(let elem in profile){
         body += `<a>${elem}</a>`
       }
       button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
