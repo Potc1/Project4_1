@@ -264,9 +264,9 @@ async function ModalCreateProfile(user_profile, type) {
       title = `Выберете профиль`;
       body = `<ul>`
       for(let elem in profile){
-        body += `<li><a onclick="event.preventDefault(); SetProfileId('${elem}'); ">${elem}</a></li>`
+        body += `<li><a href="http://example.com" onclick="event.preventDefault(); SetProfileId('${elem}'); ">${elem}</a></li>`
       }
-      body = `</ul>`
+      body += `</ul>`
       button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
       `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
       break;
