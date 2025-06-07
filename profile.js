@@ -19,7 +19,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
 
   let profileData = await GetProfile(userId);
   marketdata = data;
-  console.log(profileData)
+  console.log(profileData, user_profile_id)
   const tbody = $(`#${containerId}`);
   tbody.empty();
 
