@@ -187,6 +187,7 @@ function MakeChart(ISIN, type) {
 window.SetData = SetData;
 window.MakeChart = MakeChart;
 window.CheckProfile = CheckProfile;
+window.SetProfileId = SetProfileId;
 
 async function GetProfile(user) {
   try {
