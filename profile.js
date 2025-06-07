@@ -266,7 +266,7 @@ async function ModalCreateProfile(user_profile, type) {
       title = `Выберете профиль`;
       body = `<ul>`
       for(let elem in profile){
-        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href=profile.html?userId=${elem}">${elem}</button></li>`
+        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href='profile.html?userId=${elem}'">${elem}</button></li>`
       }
       body += `</ul>`
       button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
