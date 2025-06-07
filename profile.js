@@ -263,7 +263,7 @@ async function ModalCreateProfile(user_profile, type) {
       let profile = await GetProfile(user_profile);
       title = `Выберете профиль`;
       body = `<ul>`
-      for(elem in profile){
+      for(let elem in profile){
         body += `<li><a onclick="event.preventDefault(); SetProfileId('${elem}'); ">${elem}</a></li>`
       }
       body = `</ul>`
