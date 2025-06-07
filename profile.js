@@ -1,5 +1,5 @@
 let marketdata = 0
-
+let user_profile_id = ""; 
 // Firebase импорты
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -16,7 +16,7 @@ function formatPrice(price) {
 
 // Функция обновления таблицы акций
 async function updateAssetTable(data, containerId, assetType, userId) {
-  
+
   let profileData = await GetProfile(userId);
   marketdata = data;
   console.log(profileData)
@@ -27,12 +27,12 @@ async function updateAssetTable(data, containerId, assetType, userId) {
     tbody.html('<tr><td colspan="4" class="text-center">Нет данных для отображения</td></tr>');
     return;
   }
-  let assetsArray = 0 
+  let assetsArray = 0
   try {
-    if (assetType == 'Shares'){
+    if (assetType == 'Shares') {
       assetsArray = Object.keys(profileData['liked_shares'])
     }
-    else{
+    else {
       assetsArray = Object.keys(profileData['liked_bonds'])
     }
     if (assetsArray.length === 0) {
@@ -73,13 +73,13 @@ function SetData(data, userId) {
     console.error("Данные не определены");
     return;
   }
-  
+
   if (data.Shares) {
     updateAssetTable(data.Shares, 'stocksData', 'Shares', userId);
   } else {
     $('#stocksData').html('<tr><td colspan="4" class="text-center">Акции не найдены</td></tr>');
   }
-  
+
   if (data.Bonds) {
     updateAssetTable(data.Bonds, 'bondsData', 'Bonds', userId);
   } else {
@@ -122,9 +122,9 @@ function initFirebaseListener() {
     try {
       const data = snapshot.val();
       console.log("Получены данные из Firebase:", data);
-      
+
       const userId = tg?.initDataUnsafe?.user?.id || 'user';
-      SetData(data, userId);
+      SetData(data, userId, 1);
     } catch (error) {
       console.error("Ошибка при обработке данных из Firebase:", error);
     }
@@ -132,25 +132,25 @@ function initFirebaseListener() {
 }
 
 // Инициализация при загрузке страницы
-$(document).ready(function() {
+$(document).ready(function () {
   console.log("Документ готов");
-  
+
   initTelegramWebApp();
-  initFirebaseListener();
-  
+  initFirebaseListener(); // сюда кидаем данные из модального окна, например номер профиля пользователя или id
+
   // Обработчик для аккордеона
-  $('.accordion-btn').click(function() {
+  $('.accordion-btn').click(function () {
     const icon = $(this).find('.accordion-icon');
     icon.text(icon.text() === '+' ? '-' : '+');
   });
-  
+
   // Обработчик клика по акциям
-  $(document).on('click', '.asset-link', function(e) {
+  $(document).on('click', '.asset-link', function (e) {
     e.preventDefault();
     const isin = $(this).data('isin');
     const type = $(this).data('type');
     const chartDiv = $(`#chart-${isin}`);
-    
+
     if (chartDiv.is(':visible')) {
       chartDiv.hide();
     } else {
@@ -206,104 +206,120 @@ async function GetProfile(user) {
   }
 }
 
-function NoteModal(user, ISIN, type){
-    var title = "Изменить заметку";
-    var input = `
+function NoteModal(user, ISIN, type) {
+  var title = "Изменить заметку";
+  var input = `
     <div class="form-group">
 					<label for="count">Введите заметку</label>
 					<input id="note" name="заметка" class="form-control form-control-sm" type="text">
      </div>`
-    var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
-    var button = `<button type="button" class="btn btn-success" onclick="SetNote('${user}', '${ISIN}', '${type}', true)" data->Подтвердить</button>` +
-                  `<button type="button" class="btn btn-danger" onclick="SetNote('${user}', '${ISIN}', '${type}', false)" data->Удалить</button>`;
-    $('#commonModal .modal-header .modal-title').html(title);
-    $('#commonModal .modal-body').html(form);
-    $('#commonModal .modal-footer').html(button);
-    $('#commonModal').modal('show');
+  var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
+  var button = `<button type="button" class="btn btn-success" onclick="SetNote('${user}', '${ISIN}', '${type}', true)" data->Подтвердить</button>` +
+    `<button type="button" class="btn btn-danger" onclick="SetNote('${user}', '${ISIN}', '${type}', false)" data->Удалить</button>`;
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(form);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
 }
-function SetNote(user, ISIN, type, flag){
-    if (flag == true){
-        var note = document.getElementById('note').value
-    }
-    else{
-        note = "";
-    }
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&profile=${user}&user_note=${note}&action=note`, {
-        method: "GET"
-    })
-    $('#commonModal').modal('toggle');
-    SetProfile(marketdata, user);
-}
-
-async function CheckProfile(user_profile){
-    let res = await GetProfile(user_profile);
-    if (res != null){
-        console.log('Succes')
-        window.location.href = 'profile.html';
-        return;
-    }
-    else{
-        console.log('profile not found')
-        ModalCreateProfile(user_profile);
-    }
+function SetNote(user, ISIN, type, flag) {
+  if (flag == true) {
+    var note = document.getElementById('note').value
+  }
+  else {
+    note = "";
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&isin=${ISIN}&profile=${user}&user_note=${note}&action=note`, {
+    method: "GET"
+  })
+  $('#commonModal').modal('toggle');
+  SetProfile(marketdata, user);
 }
 
-function ModalCreateProfile(user_profile){
-    var title = "Хотите создать профиль?";
-    var button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
-                  `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
-
-    $('#commonModal .modal-header .modal-title').html(title);
-    $('#commonModal .modal-body').html('');
-    $('#commonModal .modal-footer').html(button);
-    $('#commonModal').modal('show');          
+async function CheckProfile(user_profile) {
+  let res = await GetProfile(user_profile);
+  if (res != null) {
+    console.log('Succes')
+    ModalCreateProfile(user_profile, "Choose");
+    window.location.href = 'profile.html';
+    return;
+  }
+  else {
+    console.log('profile not found')
+    ModalCreateProfile(user_profile, "Create");
+  }
 }
 
-function CreateProfile(user_profile){
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile}&action=Create`, {
-        method: "GET",
-    })
-    $('#commonModal').modal('toggle');
+async function ModalCreateProfile(user_profile, type) {
+  let title = ``;
+  let button = ``;
+  let body = '';
+  switch (type){
+    case "Create":
+      title = "Хотите создать профиль?";
+      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+      break;
+    case "Choose":
+      let profile = await GetProfile(user_profile);
+      title = `Выберете профиль`;
+      for(elem in profile){
+        body += `<a>${elem}</a>`
+      }
+      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+      break;
+  }
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(body);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
+}
+
+function CreateProfile(user_profile) {
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile}&action=Create`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
 }
 
 function modal(type, user, ISIN, cost) {
-    var title = "Изменить бумагу";
-    var input = `
+  var title = "Изменить бумагу";
+  var input = `
     <div class="form-group">
 					<label for="count">Введите количество бумаг</label>
 					<input id="count" name="email" class="form-control form-control-sm" type="text">
      </div>`
-    var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
-    var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
-                  `<button type="button" class="btn btn-danger" onclick="RemoveStonk('${type}', '${user}', '${ISIN}')" data->Удалить</button>`;
-    $('#commonModal .modal-header .modal-title').html(title);
-    $('#commonModal .modal-body').html(form);
-    $('#commonModal .modal-footer').html(button);
-    $('#commonModal').modal('show');
+  var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
+  var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
+    `<button type="button" class="btn btn-danger" onclick="RemoveStonk('${type}', '${user}', '${ISIN}')" data->Удалить</button>`;
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(form);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
 }
 
 function InsertStonk(type, user, ISIN, cost) {
-    var count = document.getElementById('count').value;
-    console.log(type, user, ISIN, cost, count);
-    data = {
-        type: type,
-        user: user,
-        ISIN: ISIN,
-        cost: cost,
-        count: count
-    }
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&count=${count}&cost=${cost}&action=Insert`, {
-        method: "GET",
-    })
-    $('#commonModal').modal('toggle');
-    console.log(marketdata)
-    SetProfile(marketdata, user)
+  var count = document.getElementById('count').value;
+  console.log(type, user, ISIN, cost, count);
+  data = {
+    type: type,
+    user: user,
+    ISIN: ISIN,
+    cost: cost,
+    count: count
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&count=${count}&cost=${cost}&action=Insert`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
+  console.log(marketdata)
+  SetProfile(marketdata, user)
 }
 
 function RemoveStonk(type, user, ISIN) {
-    fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&action=Remove`, {
-        method: "GET",
-    })
-    $('#commonModal').modal('toggle');
-    SetProfile(marketdata, user);
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&action=Remove`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
+  SetProfile(marketdata, user);
 }
