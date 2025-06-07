@@ -240,7 +240,7 @@ async function CheckProfile(user_profile) {
   if (res != null) {
     console.log('Succes')
     ModalCreateProfile(user_profile, "Choose");
-    window.location.href = 'profile.html';
+    //window.location.href = 'profile.html';
     return;
   }
   else {
@@ -262,9 +262,11 @@ async function ModalCreateProfile(user_profile, type) {
     case "Choose":
       let profile = await GetProfile(user_profile);
       title = `Выберете профиль`;
-      for(let elem in profile){
-        body += `<a>${elem}</a>`
+      body = `<ul>`
+      for(elem in profile){
+        body += `<li><a onclick="event.preventDefault(); SetProfileId('${elem}'); ">${elem}</a></li>`
       }
+      body = `</ul>`
       button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
       `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
       break;
@@ -273,6 +275,11 @@ async function ModalCreateProfile(user_profile, type) {
   $('#commonModal .modal-body').html(body);
   $('#commonModal .modal-footer').html(button);
   $('#commonModal').modal('show');
+}
+
+function SetProfileId(profile_id){
+  user_profile_id = profile_id;
+  window.location.href = 'profile.html';
 }
 
 function CreateProfile(user_profile) {
