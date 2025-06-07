@@ -1,5 +1,6 @@
 let marketdata = 0
-let user_profile_id = ""; 
+const params = new URLSearchParams(window.location.search);
+const user_profile_id = params.get('userId'); 
 // Firebase импорты
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -19,7 +20,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
 
   let profileData = await GetProfile(userId);
   marketdata = data;
-  console.log(profileData, user_profile_id)
+  console.log(profileData)
   const tbody = $(`#${containerId}`);
   tbody.empty();
 
@@ -268,7 +269,7 @@ async function ModalCreateProfile(user_profile, type) {
         body += `<li><button type="button" class="btn btn-light" onclick="SetProfileId('${elem}')">${elem}</button></li>`
       }
       body += `</ul>`
-      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      button = `<button type="button" class="btn btn-success" onclick="window.location.href=profile.html?userId=${user_profile}" data->Подтвердить</button>` +
       `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
       break;
   }
@@ -278,10 +279,12 @@ async function ModalCreateProfile(user_profile, type) {
   $('#commonModal').modal('show');
 }
 
+/*
 function SetProfileId(profile_id){
   user_profile_id = profile_id;
   window.location.href = 'profile.html';
 }
+*/
 
 function CreateProfile(user_profile) {
   fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile}&action=Create`, {
