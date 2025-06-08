@@ -30,12 +30,15 @@ async function updateAssetTable(data, containerId, assetType, userId) {
     return;
   }
   let assetsArray = 0
+  let type = "";
   try {
     if (assetType == 'Shares') {
       assetsArray = Object.keys(profileData['liked_shares'])
+      type = 'liked_shares'
     }
     else {
       assetsArray = Object.keys(profileData['liked_bonds'])
+      type = 'liked_bonds'
     }
     if (assetsArray.length === 0) {
       tbody.html('<tr><td colspan="4" class="text-center">Нет корректных данных</td></tr>');
@@ -59,6 +62,18 @@ async function updateAssetTable(data, containerId, assetType, userId) {
           <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
           <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
           <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+        </tr>
+        <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+          <td colspan="4">
+            <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+            <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
+                    <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
+                    <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
+                      <p><b>Заметка: ${profileData[type][asset][note]}<b></>
+            </div>
+            <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
+                <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
+          </td>
         </tr>
       `;
       tbody.append(row);
@@ -152,11 +167,13 @@ $(document).ready(function () {
     const isin = $(this).data('isin');
     const type = $(this).data('type');
     const chartDiv = $(`#chart-${isin}`);
-
+    const infoRow = $(`#info-${isin}`) 
     if (chartDiv.is(':visible')) {
       chartDiv.hide();
+      $(infoRow).toggleClass("collapse");
     } else {
       $('.stock-chart').hide();
+      $(infoRow).toggleClass("collapse");
       MakeChart(isin, type);
     }
   });
@@ -191,6 +208,9 @@ window.MakeChart = MakeChart;
 window.CheckProfile = CheckProfile;
 window.CreateProfile = CreateProfile;
 window.ModalCreateProfile = ModalCreateProfile;
+window.modal = modal;
+window.InsertStonk = InsertStonk;
+window.NoteModal = NoteModal;
 
 async function GetProfile(user) {
   try {

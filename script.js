@@ -13,7 +13,7 @@ function formatPrice(price) {
 }
 
 // Функция обновления таблицы акций
-function updateAssetTable(data, containerId, assetType) {
+function updateAssetTable(data, containerId, assetType, userId) {
   const tbody = $(`#${containerId}`);
   tbody.empty();
 
@@ -56,6 +56,7 @@ function updateAssetTable(data, containerId, assetType) {
                     <p><b>Цена открытия:</b> ${formatPrice(asset.OPEN)}</p>
                     <p><b>Цена сейчас:</b> ${formatPrice(asset.LAST)}</p>
             </div>
+            <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset.ISIN}', ${asset.LAST})">Добавить</button
           </td>
         </tr>
       `;
@@ -75,13 +76,13 @@ function SetData(data, userId) {
   }
   
   if (data.Shares) {
-    updateAssetTable(data.Shares, 'stocksData', 'Shares');
+    updateAssetTable(data.Shares, 'stocksData', 'Shares', userId);
   } else {
     $('#stocksData').html('<tr><td colspan="4" class="text-center">Акции не найдены</td></tr>');
   }
   
   if (data.Bonds) {
-    updateAssetTable(data.Bonds, 'bondsData', 'Bonds');
+    updateAssetTable(data.Bonds, 'bondsData', 'Bonds', userId);
   } else {
     $('#bondsData').html('<tr><td colspan="4" class="text-center">Облигации не найдены</td></tr>');
   }
@@ -188,3 +189,39 @@ function MakeChart(ISIN, type) {
 // Делаем функции доступными глобально
 window.SetData = SetData;
 window.MakeChart = MakeChart;
+window.modal = modal;
+window.InsertStonk = InsertStonk;
+
+function modal(type, user, ISIN, cost) {
+  var title = "Добавить бумагу";
+  var input = `
+    <div class="form-group">
+					<label for="count">Введите количество бумаг</label>
+					<input id="count" name="email" class="form-control form-control-sm" type="text">
+     </div>`
+  var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
+  var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
+    `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Удалить</button>`;
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(form);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
+}
+
+function InsertStonk(type, user, ISIN, cost) {
+  var count = document.getElementById('count').value;
+  console.log(type, user, ISIN, cost, count);
+  data = {
+    type: type,
+    user: user,
+    ISIN: ISIN,
+    cost: cost,
+    count: count
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?type=${type}&user=${user}&isin=${ISIN}&count=${count}&cost=${cost}&action=Insert`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
+  //console.log(marketdata)
+  //SetProfile(marketdata, user)
+}
