@@ -192,6 +192,9 @@ window.MakeChart = MakeChart;
 window.modal = modal;
 window.InsertStonk = InsertStonk;
 window.SetProfile = SetProfile;
+window.CheckProfile = CheckProfile;
+window.CreateProfile = CreateProfile;
+window.ModalCreateProfile = ModalCreateProfile;
 
 async function GetProfile(user) {
   try {
@@ -255,4 +258,68 @@ function InsertStonk(type, user, ISIN, cost) {
   })
   $('#commonModal').modal('toggle');
   //console.log(marketdata)
+}
+
+async function CheckProfile(user_profile) {
+  let res = await GetProfile(user_profile);
+  if (res != null) {
+    console.log('Succes')
+    ModalCreateProfile(user_profile, "Choose");
+    //window.location.href = 'profile.html';
+    return;
+  }
+  else {
+    console.log('profile not found')
+    ModalCreateProfile(user_profile, "Create");
+  }
+}
+
+async function ModalCreateProfile(user_profile, type) {
+  let title = ``;
+  let button = ``;
+  let body = '';
+  switch (type){
+    case "Create":
+      title = "Хотите создать профиль?";
+      body = `<div class="form-group">
+	                <label for="name">Введите имя</label>
+	                <input id="name" name="name" class="form-control form-control-sm" type="text">
+              </div>`
+      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+      break;
+    case "Choose":
+      let profile = await GetProfile(user_profile);
+      title = `Выберете профиль`;
+      body = `<ul>`
+      for(let elem in profile){
+        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href='profile.html?userId=${elem}'">${elem}</button></li>`
+      }
+      body += `</ul>`
+      button = `<button type="button" class="btn btn-success" onclick="ModalCreateProfile('${user_profile}', 'Create')" data->Новый профиль</button>` +
+      `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
+      break;
+  }
+  $('#commonModal .modal-header .modal-title').html(title);
+  $('#commonModal .modal-body').html(body);
+  $('#commonModal .modal-footer').html(button);
+  $('#commonModal').modal('show');
+}
+
+/*
+function SetProfileId(profile_id){
+  user_profile_id = profile_id;
+  window.location.href = 'profile.html';
+}
+*/
+function CreateProfile(user_profile) {
+  let input = document.getElementById('name')
+  let text = input.value;
+  if (text != null){
+    text = '/' + text;
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile+text}&action=Create`, {
+    method: "GET",
+  })
+  $('#commonModal').modal('toggle');
 }
