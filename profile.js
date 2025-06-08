@@ -192,7 +192,6 @@ window.CheckProfile = CheckProfile;
 window.CreateProfile = CreateProfile;
 window.ModalCreateProfile = ModalCreateProfile;
 
-
 async function GetProfile(user) {
   try {
     const response = await fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user}&action=Profile`, {
@@ -273,7 +272,7 @@ async function ModalCreateProfile(user_profile, type) {
       title = `Выберете профиль`;
       body = `<ul>`
       for(let elem in profile){
-        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href=profile.html?userId=${elem}">${elem}</button></li>`
+        body += `<li><button type="button" class="btn btn-light" onclick="'window.location.href=profile.html?userId=${elem}'">${elem}</button></li>`
       }
       body += `</ul>`
       button = `<button type="button" class="btn btn-success" onclick="ModalCreateProfile('${user_profile}', 'Create')" data->Новый профиль</button>` +
