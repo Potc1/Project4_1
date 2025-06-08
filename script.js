@@ -42,20 +42,20 @@ function updateAssetTable(data, containerId, assetType, userId) {
               <a href="#" class="asset-link" 
                 data-isin="${asset || ''}"s
                 data-type="${assetType}"
-                data-name="${data[asset]['NAME'] || ''}">
-                ${data[asset]['NAME'] || 'Без названия'}
+                data-name="${asset.NAME || ''}">
+                ${asset.NAME || 'Без названия'}
               </a>
             </td>
-            <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
-            <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
-            <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+            <td class="text-end">${asset.LOTSIZE || ''}</td>
+            <td class="text-end">${formatPrice(asset.LOW)}</td>
+            <td class="text-end">${formatPrice(asset.HIGH)}</td>
           </tr>
-          <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+          <tr class="StockContent collapse" id="info-${asset.ISIN || ''}">
             <td colspan="4">
-              <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
-              <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
-                      <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
-                      <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
+              <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+              <div><p><b>ISIN:</b> ${asset.ISIN || ''}</p>
+                      <p><b>Цена открытия:</b> ${formatPrice(asset.OPEN)}</p>
+                      <p><b>Цена сейчас:</b> ${formatPrice(asset.LAST)}</p>
               </div>
               <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset.ISIN}', ${asset.LAST})">Добавить</button>
             </td>
@@ -72,22 +72,22 @@ function updateAssetTable(data, containerId, assetType, userId) {
               <a href="#" class="asset-link" 
                 data-isin="${asset || ''}"s
                 data-type="${assetType}"
-                data-name="${data[asset]['NAME'] || ''}">
-                ${data[asset]['NAME'] || 'Без названия'}
+                data-name="${asset.NAME || ''}">
+                ${asset.NAME || 'Без названия'}
               </a>
             </td>
-            <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
-            <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
-            <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+            <td class="text-end">${asset.LOTSIZE || asset.LOTVALUE}</td>
+            <td class="text-end">${formatPrice(asset.LOW)}</td>
+            <td class="text-end">${formatPrice(asset.HIGH)}</td>
           </tr>
-          <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+          <tr class="StockContent collapse" id="info-${asset.ISIN || ''}">
             <td colspan="4">
-              <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
-              <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
-                      <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
-                      <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
-                      <p><b>Доходность:</b>${data[asset]['YIELD']}%</p>
-                      <p><b>Размер купона:</b> ${formatPrice(data[asset]['COUPONVALUE'])}</p>
+              <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+              <div><p><b>ISIN:</b> ${asset.ISIN || ''}</p>
+                      <p><b>Цена открытия:</b> ${formatPrice(asset.OPEN)}</p>
+                      <p><b>Цена сейчас:</b> ${formatPrice(asset.LAST)}</p>
+                      <p><b>Доходность:</b>${asset.YIELD}%</p>
+                      <p><b>Размер купона:</b> ${formatPrice(asset.COUPONVALUE)}</p>
               </div>
               <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset.ISIN}', ${asset.LAST})">Добавить</button>
             </td>
