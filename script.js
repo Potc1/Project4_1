@@ -211,7 +211,7 @@ function modal(type, user, ISIN, cost) {
 function InsertStonk(type, user, ISIN, cost) {
   var count = document.getElementById('count').value;
   console.log(type, user, ISIN, cost, count);
-  data = {
+  let data = {
     type: type,
     user: user,
     ISIN: ISIN,

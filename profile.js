@@ -57,7 +57,6 @@ async function updateAssetTable(data, containerId, assetType, userId) {
                data-name="${data[asset]['NAME'] || ''}">
               ${data[asset]['NAME'] || 'Без названия'}
             </a>
-            <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; height: 300px;"></div>
           </td>
           <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
           <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
@@ -69,7 +68,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
             <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
                     <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
                     <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
-                      <p><b>Заметка: ${profileData[type][asset]['note']}<b></>
+                      <p><b>Заметка: ${profileData[type][asset]['note']}<b><p/>
             </div>
             <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                 <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
@@ -256,7 +255,7 @@ function SetNote(user, ISIN, type, flag) {
     method: "GET"
   })
   $('#commonModal').modal('toggle');
-  SetProfile(marketdata, user);
+  SetData(marketdata, user);
 }
 
 async function CheckProfile(user_profile) {
@@ -342,7 +341,7 @@ function modal(type, user, ISIN, cost) {
 function InsertStonk(type, user, ISIN, cost) {
   var count = document.getElementById('count').value;
   console.log(type, user, ISIN, cost, count);
-  data = {
+  let data = {
     type: type,
     user: user,
     ISIN: ISIN,
@@ -354,7 +353,7 @@ function InsertStonk(type, user, ISIN, cost) {
   })
   $('#commonModal').modal('toggle');
   console.log(marketdata)
-  SetProfile(marketdata, user)
+  SetData(marketdata, user)
 }
 
 function RemoveStonk(type, user, ISIN) {
@@ -362,5 +361,5 @@ function RemoveStonk(type, user, ISIN) {
     method: "GET",
   })
   $('#commonModal').modal('toggle');
-  SetProfile(marketdata, user);
+  SetData(marketdata, user);
 }
