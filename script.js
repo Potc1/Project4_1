@@ -44,7 +44,11 @@ function updateAssetTable(data, containerId, assetType) {
                data-name="${asset.NAME || ''}">
               ${asset.NAME || 'Без названия'}
             </a>
-            <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; height: 300px;"></div>
+            <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; height: 300px;">
+              <div id="${asset.ISIN || ''}-info">
+              <p><b>ISIN: ${asset.ISIN || ''}</b></p>
+              </div>
+            </div>
           </td>
           <td class="text-end">${asset.LOTSIZE || asset.LOTVALUE}</td>
           <td class="text-end">${formatPrice(asset.LOW)}</td>
