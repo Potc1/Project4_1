@@ -5,7 +5,7 @@ import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10
 // Глобальные переменные
 let tg;
 let database;
-
+let user_profile_id = '';
 // Форматирование цены
 function formatPrice(price) {
   if (!price) return '0.00 ₽';
@@ -191,14 +191,21 @@ window.SetData = SetData;
 window.MakeChart = MakeChart;
 window.modal = modal;
 window.InsertStonk = InsertStonk;
+window.SetProfile = SetProfile;
 
-function modal(type, user, ISIN, cost) {
+async function modal(type, user, ISIN, cost) {
   var title = "Добавить бумагу";
   var input = `
     <div class="form-group">
 					<label for="count">Введите количество бумаг</label>
 					<input id="count" name="email" class="form-control form-control-sm" type="text">
      </div>`
+  input += '<ul>'
+  let profile = await GetProfile(user_profile);
+  for(let elem in profile){
+        input += `<li><button type="button" class="btn btn-light" onclick="SetProfile('${elem}')">${elem}</button></li>`
+      }
+  input += '</ul>'
   var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
   var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
     `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Удалить</button>`;
@@ -208,9 +215,16 @@ function modal(type, user, ISIN, cost) {
   $('#commonModal').modal('show');
 }
 
+function SetProfile(id){
+  user_profile_id = id;
+}
+
 function InsertStonk(type, user, ISIN, cost) {
   var count = document.getElementById('count').value;
   console.log(type, user, ISIN, cost, count);
+  if (user_profile_id != null){
+    user = user + '/' + user_profile_id;
+  }
   let data = {
     type: type,
     user: user,
@@ -223,5 +237,4 @@ function InsertStonk(type, user, ISIN, cost) {
   })
   $('#commonModal').modal('toggle');
   //console.log(marketdata)
-  //SetProfile(marketdata, user)
 }

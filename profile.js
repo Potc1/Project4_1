@@ -67,7 +67,9 @@ async function updateAssetTable(data, containerId, assetType, userId) {
             <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
                     <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
                     <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
-                      <p><b>Заметка: ${profileData[type][asset]['note']}<b><p/>
+                    <p><b>Цена покупки</b> ${formatPrice(profileData[type][asset]['likedCost'])}</p>
+                    <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
+                      <p><b>Заметка:</b> ${profileData[type][asset]['note']}</p>
             </div>
             <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                 <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
@@ -139,8 +141,8 @@ function initFirebaseListener() {
       const data = snapshot.val();
       console.log("Получены данные из Firebase:", data);
 
-      const userId = tg?.initDataUnsafe?.user?.id || 'user';
-      SetData(data, userId, 1);
+      const userId = tg?.initDataUnsafe?.user?.id  + '/' + user_profile_id || 'user';
+      SetData(data, userId);
     } catch (error) {
       console.error("Ошибка при обработке данных из Firebase:", error);
     }
@@ -292,7 +294,7 @@ async function ModalCreateProfile(user_profile, type) {
       title = `Выберете профиль`;
       body = `<ul>`
       for(let elem in profile){
-        body += `<li><button type="button" class="btn btn-light" onclick="'window.location.href=profile.html?userId=${elem}'">${elem}</button></li>`
+        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href='profile.html?userId=${elem}'">${elem}</button></li>`
       }
       body += `</ul>`
       button = `<button type="button" class="btn btn-success" onclick="ModalCreateProfile('${user_profile}', 'Create')" data->Новый профиль</button>` +
