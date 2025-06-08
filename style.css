@@ -389,5 +389,9 @@ thead th {
   will-change: transform;
 }
 
+.StockContent{
+  display: none;
+}
+
 #stocksTable .asset-link { color: #2A7B9B; }
 #bondsTable .asset-link { color: #6c757d; }

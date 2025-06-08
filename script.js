@@ -52,6 +52,7 @@ function updateAssetTable(data, containerId, assetType) {
         <tr class="StockContent">
           <td colspan="4">
             <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+            <div>Скрыто</div>
           </td>
         </tr>
       `;
