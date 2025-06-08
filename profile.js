@@ -190,6 +190,8 @@ window.SetData = SetData;
 window.MakeChart = MakeChart;
 window.CheckProfile = CheckProfile;
 window.CreateProfile = CreateProfile;
+window.ModalCreateProfile = ModalCreateProfile;
+
 
 async function GetProfile(user) {
   try {
