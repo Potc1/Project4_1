@@ -9,6 +9,8 @@ import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10
 // Глобальные переменные
 let tg;
 let database;
+let price = 0;
+let beginPrice = 0;
 
 // Форматирование цены
 function formatPrice(price) {
@@ -30,6 +32,8 @@ async function updateAssetTable(data, containerId, assetType, userId) {
   }
   let assetsArray = 0
   let type = "";
+  let profilePrice = 0;
+  let profileBeginPrice = 0;
   try {
     if (assetType == 'Shares') {
       assetsArray = Object.keys(profileData['liked_shares'])
@@ -46,42 +50,89 @@ async function updateAssetTable(data, containerId, assetType, userId) {
 
     const sortedAssets = assetsArray.sort((a, b) => (a.NAME || '').localeCompare(b.NAME || ''));
     console.log(sortedAssets)
-    sortedAssets.forEach(asset => {
-      const row = `
-        <tr data-isin="${asset || ''}">
-          <td>
-            <a href="#" class="asset-link" 
-               data-isin="${asset || ''}"s
-               data-type="${assetType}"
-               data-name="${data[asset]['NAME'] || ''}">
-              ${data[asset]['NAME'] || 'Без названия'}
-            </a>
-          </td>
-          <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
-          <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
-          <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
-        </tr>
-        <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
-          <td colspan="4">
-            <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
-            <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
-                    <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
-                    <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
-                    <p><b>Цена покупки</b> ${formatPrice(profileData[type][asset]['likedCost'])}</p>
-                    <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
-                      <p><b>Заметка:</b> ${profileData[type][asset]['note']}</p>
-            </div>
-            <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
-                <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
-          </td>
-        </tr>
-      `;
-      tbody.append(row);
-    });
+    if (assetType == 'Shares'){
+      sortedAssets.forEach(asset => {
+        const row = `
+          <tr data-isin="${asset || ''}">
+            <td>
+              <a href="#" class="asset-link" 
+                data-isin="${asset || ''}"s
+                data-type="${assetType}"
+                data-name="${data[asset]['NAME'] || ''}">
+                ${data[asset]['NAME'] || 'Без названия'}
+              </a>
+            </td>
+            <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+            <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+            <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+          </tr>
+          <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+            <td colspan="4">
+              <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+              <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
+                      <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
+                      <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
+                      <p><b>Цена покупки</b> ${formatPrice(profileData[type][asset]['likedCost'])}</p>
+                      <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
+                        <p><b>Заметка:</b> ${profileData[type][asset]['note']}</p>
+              </div>
+              <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
+                  <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
+            </td>
+          </tr>
+        `;
+        profilePrice += data[asset]['LAST']*data[asset]['LOTSIZE']*profileData[type][asset]['count']
+        profileBeginPrice += profileData[type][asset]['likedCost']*data[asset]['LOTSIZE']*profileData[type][asset]['count']
+        tbody.append(row);
+      });
+    }
+    else{
+        sortedAssets.forEach(asset => {
+        const row = `
+          <tr data-isin="${asset || ''}">
+            <td>
+              <a href="#" class="asset-link" 
+                data-isin="${asset || ''}"s
+                data-type="${assetType}"
+                data-name="${data[asset]['NAME'] || ''}">
+                ${data[asset]['NAME'] || 'Без названия'}
+              </a>
+            </td>
+            <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+            <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+            <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+          </tr>
+          <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+            <td colspan="4">
+              <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+              <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
+                      <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
+                      <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
+                      <p><b>Цена покупки</b> ${formatPrice(profileData[type][asset]['likedCost'])}</p>
+                      <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
+                      <p><b>Доходность:</b>${data[asset]['YIELD']}%</p>
+                      <p><b>Размер купона:</b> ${formatPrice(data[asset]['COUPONVALUE'])}</p>
+                        <p><b>Заметка:</b> ${profileData[type][asset]['note']}</p>
+              </div>
+              <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
+                  <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
+            </td>
+          </tr>
+        `;
+        profilePrice += data[asset]['LAST']*data[asset]['LOTVALUE']*profileData[type][asset]['count']
+        profileBeginPrice += profileData[type][asset]['likedCost']*data[asset]['LOTVALUE']*profileData[type][asset]['count']
+        tbody.append(row);
+      });
+    }
   } catch (error) {
     console.error(`Ошибка при обновлении таблицы ${assetType}:`, error);
     tbody.html('<tr><td colspan="4" class="text-center text-danger">Ошибка загрузки данных</td></tr>');
   }
+  price += profilePrice;
+  beginPrice += profileBeginPrice;
+  $('#costValue').text(formatPrice(price));
+  $('#income_valueValue').text(formatPrice(price-beginPrice));
+  $('#income_percentValue').text((price-beginPrice)/100 + '%');
 }
 
 // Основная функция обработки данных
