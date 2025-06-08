@@ -20,7 +20,6 @@ function formatPrice(price) {
 async function updateAssetTable(data, containerId, assetType, userId) {
 
   let profileData = await GetProfile(userId);
-  marketdata = data;
   console.log(profileData, user_profile_id);
   const tbody = $(`#${containerId}`);
   tbody.empty();
@@ -85,6 +84,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
 
 // Основная функция обработки данных
 function SetData(data, userId) {
+  marketdata = data;
   if (!data) {
     console.error("Данные не определены");
     return;
@@ -210,6 +210,7 @@ window.ModalCreateProfile = ModalCreateProfile;
 window.modal = modal;
 window.InsertStonk = InsertStonk;
 window.NoteModal = NoteModal;
+window.SetNote = SetNote;
 
 async function GetProfile(user) {
   try {
