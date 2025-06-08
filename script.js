@@ -40,7 +40,7 @@ function updateAssetTable(data, containerId, assetType, userId) {
           <tr data-isin="${asset || ''}">
             <td>
               <a href="#" class="asset-link" 
-                data-isin="${asset || ''}"
+                data-isin="${asset.ISIN || ''}"
                 data-type="${assetType}"
                 data-name="${asset.NAME || ''}">
                 ${asset.NAME || 'Без названия'}
@@ -70,7 +70,7 @@ function updateAssetTable(data, containerId, assetType, userId) {
           <tr data-isin="${asset || ''}">
             <td>
               <a href="#" class="asset-link" 
-                data-isin="${asset || ''}"
+                data-isin="${asset.ISIN || ''}"
                 data-type="${assetType}"
                 data-name="${asset.NAME || ''}">
                 ${asset.NAME || 'Без названия'}
