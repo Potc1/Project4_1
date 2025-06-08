@@ -34,34 +34,68 @@ function updateAssetTable(data, containerId, assetType, userId) {
 
     const sortedAssets = assetsArray.sort((a, b) => (a.NAME || '').localeCompare(b.NAME || ''));
 
-    sortedAssets.forEach(asset => {
-      const row = `
-        <tr data-isin="${asset.ISIN || ''}">
-          <td>
-            <a href="#" class="asset-link" 
-               data-isin="${asset.ISIN || ''}"
-               data-type="${assetType}"
-               data-name="${asset.NAME || ''}">
-              ${asset.NAME || 'Без названия'}
-            </a>
-          </td>
-          <td class="text-end">${asset.LOTSIZE || asset.LOTVALUE}</td>
-          <td class="text-end">${formatPrice(asset.LOW)}</td>
-          <td class="text-end">${formatPrice(asset.HIGH)}</td>
-        </tr>
-        <tr class="StockContent collapse" id="info-${asset.ISIN || ''}">
-          <td colspan="4">
-            <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
-            <div><p><b>ISIN:</b> ${asset.ISIN || ''}</p>
-                    <p><b>Цена открытия:</b> ${formatPrice(asset.OPEN)}</p>
-                    <p><b>Цена сейчас:</b> ${formatPrice(asset.LAST)}</p>
-            </div>
-            <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset.ISIN}', ${asset.LAST})">Добавить</button
-          </td>
-        </tr>
-      `;
-      tbody.append(row);
-    });
+    if (assetType == 'Shares'){
+      sortedAssets.forEach(asset => {
+        const row = `
+          <tr data-isin="${asset || ''}">
+            <td>
+              <a href="#" class="asset-link" 
+                data-isin="${asset || ''}"s
+                data-type="${assetType}"
+                data-name="${data[asset]['NAME'] || ''}">
+                ${data[asset]['NAME'] || 'Без названия'}
+              </a>
+            </td>
+            <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+            <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+            <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+          </tr>
+          <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+            <td colspan="4">
+              <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+              <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
+                      <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
+                      <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
+              </div>
+              <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset.ISIN}', ${asset.LAST})">Добавить</button>
+            </td>
+          </tr>
+        `;
+        tbody.append(row);
+      });
+    }
+    else{
+        sortedAssets.forEach(asset => {
+        const row = `
+          <tr data-isin="${asset || ''}">
+            <td>
+              <a href="#" class="asset-link" 
+                data-isin="${asset || ''}"s
+                data-type="${assetType}"
+                data-name="${data[asset]['NAME'] || ''}">
+                ${data[asset]['NAME'] || 'Без названия'}
+              </a>
+            </td>
+            <td class="text-end">${data[asset]['LOTSIZE'] || data[asset]['LOTVALUE']}</td>
+            <td class="text-end">${formatPrice(data[asset]['LOW'])}</td>
+            <td class="text-end">${formatPrice(data[asset]['HIGH'])}</td>
+          </tr>
+          <tr class="StockContent collapse" id="info-${data[asset]['ISIN'] || ''}">
+            <td colspan="4">
+              <div id="chart-${data[asset]['ISIN'] || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
+              <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
+                      <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
+                      <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
+                      <p><b>Доходность:</b>${data[asset]['YIELD']}%</p>
+                      <p><b>Размер купона:</b> ${formatPrice(data[asset]['COUPONVALUE'])}</p>
+              </div>
+              <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset.ISIN}', ${asset.LAST})">Добавить</button>
+            </td>
+          </tr>
+        `;
+        tbody.append(row);
+      });
+    }
   } catch (error) {
     console.error(`Ошибка при обновлении таблицы ${assetType}:`, error);
     tbody.html('<tr><td colspan="4" class="text-center text-danger">Ошибка загрузки данных</td></tr>');
