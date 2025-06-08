@@ -69,7 +69,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
             <div><p><b>ISIN:</b> ${data[asset]['ISIN'] || ''}</p>
                     <p><b>Цена открытия:</b> ${formatPrice(data[asset]['OPEN'])}</p>
                     <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
-                      <p><b>Заметка: ${profileData[type][asset][note]}<b></>
+                      <p><b>Заметка: ${profileData[type][asset]['note']}<b></>
             </div>
             <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                 <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
