@@ -193,6 +193,24 @@ window.modal = modal;
 window.InsertStonk = InsertStonk;
 window.SetProfile = SetProfile;
 
+async function GetProfile(user) {
+  try {
+    const response = await fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user}&action=Profile`, {
+      method: "GET"
+    });
+
+    if (!response.ok) {
+      throw new Error('Ошибка сети');
+    }
+
+    const data = await response.json(); // ← вот здесь результат
+    return data; // ← сохранили и вернули
+  } catch (err) {
+    console.error('Ошибка запроса:', err);
+    return null; // ← если ошибка — вернуть null
+  }
+}
+
 async function modal(type, user, ISIN, cost) {
   var title = "Добавить бумагу";
   var input = `
