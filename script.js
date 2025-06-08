@@ -52,7 +52,10 @@ function updateAssetTable(data, containerId, assetType) {
         <tr class="StockContent collapse" id="info-${asset.ISIN || ''}">
           <td colspan="4">
             <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
-            <div>Скрыто</div>
+            <div><p><b>ISIN:</b> ${asset.ISIN || ''}</p>
+                    <p><b>Цена открытия:</b> ${formatPrice(asset.OPEN)}</p>
+                    <p><b>Цена сейчас:</b> ${formatPrice(asset.LAST)}</p>
+            </div>
           </td>
         </tr>
       `;
