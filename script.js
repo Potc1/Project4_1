@@ -219,7 +219,7 @@ async function modal(type, user, ISIN, cost) {
 					<input id="count" name="email" class="form-control form-control-sm" type="text">
      </div>`
   input += '<ul>'
-  let profile = await GetProfile(user_profile);
+  let profile = await GetProfile(user);
   for(let elem in profile){
         input += `<li><button type="button" class="btn btn-light" onclick="SetProfile('${elem}')">${elem}</button></li>`
       }
