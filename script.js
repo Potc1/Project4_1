@@ -49,7 +49,7 @@ function updateAssetTable(data, containerId, assetType) {
           <td class="text-end">${formatPrice(asset.LOW)}</td>
           <td class="text-end">${formatPrice(asset.HIGH)}</td>
         </tr>
-        <tr class="StockContent">
+        <tr class="StockContent collapse" id="info-${asset.ISIN || ''}">
           <td colspan="4">
             <div id="chart-${asset.ISIN || ''}" class="mt-3" style="display:none; width: 100%; height: 300px;"></div>
             <div>Скрыто</div>
@@ -147,11 +147,13 @@ $(document).ready(function() {
     const isin = $(this).data('isin');
     const type = $(this).data('type');
     const chartDiv = $(`#chart-${isin}`);
-    
+    const infoRow = $(`#info-${isin}`) 
     if (chartDiv.is(':visible')) {
       chartDiv.hide();
+      $(infoRow).toggleClass("collapse");
     } else {
       $('.stock-chart').hide();
+      $(infoRow).toggleClass("collapse");
       MakeChart(isin, type);
     }
   });

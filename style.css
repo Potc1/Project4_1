@@ -389,7 +389,12 @@ thead th {
   will-change: transform;
 }
 
-
+.StockContent{
+  background-color:s #2A7B9B;;
+}
+.StockContent.collapse{
+  display: none;
+}
 
 #stocksTable .asset-link { color: #2A7B9B; }
 #bondsTable .asset-link { color: #6c757d; }
