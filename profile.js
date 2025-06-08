@@ -1,5 +1,6 @@
 let marketdata = 0
 const params = new URLSearchParams(window.location.search);
+// реализация мультиаккаунтности через url параметры 
 const user_profile_id = params.get('userId'); 
 // Firebase импорты
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -258,6 +259,10 @@ async function ModalCreateProfile(user_profile, type) {
   switch (type){
     case "Create":
       title = "Хотите создать профиль?";
+      body = `<div class="form-group">
+	                <label for="name">Введите имя</label>
+	                <input id="name" name="name" class="form-control form-control-sm" type="text">
+              </div>`
       button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
       `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
       break;
@@ -266,10 +271,10 @@ async function ModalCreateProfile(user_profile, type) {
       title = `Выберете профиль`;
       body = `<ul>`
       for(let elem in profile){
-        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href='profile.html?userId=${elem}'">${elem}</button></li>`
+        body += `<li><button type="button" class="btn btn-light" onclick="window.location.href=profile.html?userId=${elem}">${elem}</button></li>`
       }
       body += `</ul>`
-      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Подтвердить</button>` +
+      button = `<button type="button" class="btn btn-success" onclick="CreateProfile('${user_profile}')" data->Новый профиль</button>` +
       `<button type="button" class="btn btn-danger" onclick="$('#commonModal').modal('toggle')" data->Отказаться</button>`;
       break;
   }
@@ -286,7 +291,12 @@ function SetProfileId(profile_id){
 }
 */
 function CreateProfile(user_profile) {
-  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile}&action=Create`, {
+  let input = document.getElementById('name')
+  let text = input.value;
+  if (text != null){
+    text = '/' + text;
+  }
+  fetch(`https://script.google.com/macros/s/AKfycbzYbVQKlcIVXaqDP2ZpvSoVMs80_KbRX4r1cSdR4mtgy6YXIufTUs-vFlIijFNnM4Jbgg/exec?profile=${user_profile+text}&action=Create`, {
     method: "GET",
   })
   $('#commonModal').modal('toggle');
