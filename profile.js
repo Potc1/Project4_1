@@ -264,6 +264,7 @@ window.modal = modal;
 window.InsertStonk = InsertStonk;
 window.NoteModal = NoteModal;
 window.SetNote = SetNote;
+window.RemoveStonk = RemoveStonk;
 
 async function GetProfile(user) {
   try {
