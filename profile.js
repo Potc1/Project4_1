@@ -76,7 +76,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
                       <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
                         <p><b>Заметка:</b> ${profileData[type][asset]['note'] || ''}</p>
               </div>
-              <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
+              <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                   <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
             </td>
           </tr>
@@ -114,7 +114,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
                       <p><b>Размер купона:</b> ${formatPrice(data[asset]['COUPONVALUE'])}</p>
                         <p><b>Заметка:</b> ${profileData[type][asset]['note'] || ''}</p>
               </div>
-              <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
+              <button type="button" class="btn btn-primary btn" onclick="modal('${assetType}', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                   <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
             </td>
           </tr>
