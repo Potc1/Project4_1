@@ -206,7 +206,7 @@ $(document).ready(function () {
 
   initTelegramWebApp();
   initFirebaseListener(); // сюда кидаем данные из модального окна, например номер профиля пользователя или id
-
+  $('#user_profile_id').text(user_profile_id);
   // Обработчик для аккордеона
   $('.accordion-btn').click(function () {
     const icon = $(this).find('.accordion-icon');
