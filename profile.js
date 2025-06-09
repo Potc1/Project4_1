@@ -74,7 +74,7 @@ async function updateAssetTable(data, containerId, assetType, userId) {
                       <p><b>Цена сейчас:</b> ${formatPrice(data[asset]['LAST'])}</p>
                       <p><b>Цена покупки</b> ${formatPrice(profileData[type][asset]['likedCost'])}</p>
                       <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
-                        <p><b>Заметка:</b> ${profileData[type][asset]['note']}</p>
+                        <p><b>Заметка:</b> ${profileData[type][asset]['note'] || ''}</p>
               </div>
               <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                   <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
@@ -112,15 +112,15 @@ async function updateAssetTable(data, containerId, assetType, userId) {
                       <p><b>Количество моих лотов:</b> ${profileData[type][asset]['count'] || '0'}</p>
                       <p><b>Доходность:</b>${data[asset]['YIELD']}%</p>
                       <p><b>Размер купона:</b> ${formatPrice(data[asset]['COUPONVALUE'])}</p>
-                        <p><b>Заметка:</b> ${profileData[type][asset]['note']}</p>
+                        <p><b>Заметка:</b> ${profileData[type][asset]['note'] || ''}</p>
               </div>
               <button type="button" class="btn btn-primary btn" onclick="modal('Shares', '${userId}', '${asset}', ${data[asset]['LAST']})">Изменить</button>
                   <button type="button" class="btn btn-primary btn" onclick="NoteModal('${userId}', '${asset}', '${assetType}')">Заметка</button>
             </td>
           </tr>
         `;
-        profilePrice += data[asset]['LAST']*data[asset]['LOTVALUE']*profileData[type][asset]['count']
-        profileBeginPrice += profileData[type][asset]['likedCost']*data[asset]['LOTVALUE']*profileData[type][asset]['count']
+        profilePrice += (data[asset]['LAST']/100)*data[asset]['LOTVALUE']*profileData[type][asset]['count']
+        profileBeginPrice += profileData[type][asset]['likedCost']*(data[asset]['LOTVALUE']/100)*profileData[type][asset]['count']
         tbody.append(row);
       });
     }
