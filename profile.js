@@ -381,7 +381,7 @@ function modal(type, user, ISIN, cost) {
   var input = `
     <div class="form-group">
 					<label for="count">Введите количество бумаг</label>
-					<input id="count" name="email" class="form-control form-control-sm" type="text">
+					<input id="count" name="email" class="form-control form-control-sm" type="number">
      </div>`
   var form = `<form id="updateTaskForm" onsubmit="return false;">${input}</form>`;
   var button = `<button type="button" class="btn btn-success" onclick="InsertStonk('${type}', '${user}', '${ISIN}', ${cost})" data->Подтвердить</button>` +
